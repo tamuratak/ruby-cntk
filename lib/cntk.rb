@@ -1,0 +1,8 @@
+require "cntk/CNTK"
+require "cntk/dictionary"
+require "cntk/function"
+require "cntk/ndshape"
+require "cntk/ndarrayview"
+require "cntk/ops"
+require "cntk/value"
+require "cntk/variable"

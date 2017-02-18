@@ -1,5 +1,6 @@
 *.gem
 *.rbc
+/ext/cntk/cntk_wrap.cxx
 /.config
 /coverage/
 /InstalledFiles
