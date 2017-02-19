@@ -5,9 +5,15 @@ module CNTK
     def self.create(val)
       case val
       when Hash
-        new(Dictionary.create(val))
+        new Dictionary.create(val)
+      when Array
+        v = StdVectorDictionaryValue.new
+        val.each_with_index{|e, idx|
+          v[idx] = create(e)
+        }
+        new( v )
       else
-        new(val)
+        new val
       end
     end
 
@@ -32,7 +38,7 @@ module CNTK
       when Type_Vector
         value_vec_dict_value__
       when Type_Dictionary
-        value_dictionary__
+        value_dict__
       when Type_NDArrayView
         value_ndarrayview__
       else
@@ -46,6 +52,7 @@ module CNTK
     def self.create(h)
       dict = new()
       h.each_pair{|k, v|
+        k = k.to_s if k.is_a?(Symbol)
         dict[k] = DictionaryValue.create(v)
       }
       return dict

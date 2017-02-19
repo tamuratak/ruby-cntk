@@ -7,14 +7,13 @@
  // https://github.com/Microsoft/CNTK/blob/master/Source/CNTKv2LibraryDll/API/CNTKLibrary.h
  //
 
-%include <stl.i>
-%include <std_wstring.i>
-%include <std_vector.i>
-%include <std_map.i>
-%include <std_unordered_map.i>
-%include <std_unordered_set.i>
-%include <std_pair.i>
-%include <std_shared_ptr.i>
+%include std_wstring.i
+%include std_vector.i
+%include std_map.i
+%include std_unordered_map.i
+%include std_unordered_set.i
+%include std_pair.i
+%include std_shared_ptr.i
 
 %template(StdVectorSizeT) std::vector<size_t>;
 %template(StdVectorDouble) std::vector<double>;
@@ -39,6 +38,7 @@
 
 
 %{
+#include <vector>
 #include <CNTKLibrary.h>
 %}
 %inline %{
@@ -48,6 +48,7 @@ namespace RubyCNTK {
   static RubyCNTK::DeviceDescriptor __cpu_device__ = RubyCNTK::DeviceDescriptor::CPUDevice();
   static RubyCNTK::DeviceDescriptor __best_device__ = RubyCNTK::DeviceDescriptor::BestDevice();
   static std::vector<RubyCNTK::DeviceDescriptor> __all_device__;
+  //  typedef std::pair<RubyCNTK::Variable, RubyCNTK::Variable> StdPairVariableVariable;
 };
 %}
 
@@ -66,11 +67,13 @@ namespace RubyCNTK {
   typedef std::shared_ptr<RubyCNTK::TrainingSession> TrainingSessionPtr;
 };
 
+
 %template() std::vector<RubyCNTK::DeviceDescriptor>;
 %template(StdVectorVariable) std::vector<RubyCNTK::Variable>;
-%template(StdVectorStdPairVarableVariable) std::vector<std::pair<RubyCNTK::Variable, RubyCNTK::Variable> >;
+%template(StdVectorPairVariableVariable) std::vector< std::pair<RubyCNTK::Variable, RubyCNTK::Variable> >;
+%template(StdVectorDictionaryValue) std::vector< RubyCNTK::DictionaryValue >;
 %template(StdUMapVariableValue) std::unordered_map< RubyCNTK::Variable, RubyCNTK::ValuePtr >;
-%template(StdUMapVariableVariable) std::unordered_map< RubyCNTK::Variable, RubyCNTK::Variable >;
+%template(StdUMapVariablevariable) std::unordered_map< RubyCNTK::Variable, RubyCNTK::Variable >;
 %template(StdUSetVariable) std::unordered_set<RubyCNTK::Variable>;
 %template(StdUSetDistributedWorkerDescriptor) std::unordered_set<RubyCNTK::DistributedWorkerDescriptor>;
 
@@ -101,7 +104,7 @@ namespace RubyCNTK {
     std::vector<size_t> dimensions(RARRAY_LEN(arry));
     for (int i=0; i<RARRAY_LEN(arry); i++) {
 	VALUE elt = RARRAY_AREF(arry, i);
-        dimensions[i] = NUM2INT(elt);
+        dimensions[i] = NUM2SIZET(elt);
     }
     tmp = CNTK::NDShape(dimensions);
     $1 = &tmp;
@@ -224,6 +227,8 @@ namespace RubyCNTK {
     size_t TotalSize();
 
     NDShape AppendShape(const NDShape&);
+
+    static const NDShape Unknown;
 
     %extend {
       size_t __getitem__(size_t axis) {
@@ -373,27 +378,32 @@ namespace RubyCNTK {
         NDArrayView,
     };
 
-    static const char* TypeName(Type type);
     DictionaryValue();
     ~DictionaryValue();
 
     DictionaryValue(bool);
     DictionaryValue(size_t);
     DictionaryValue(double);
-    DictionaryValue(const std::vector<DictionaryValue>& value);
+    DictionaryValue(const std::vector<RubyCNTK::DictionaryValue>&);
     DictionaryValue(const Axis&);
     DictionaryValue(const std::wstring&);
     DictionaryValue(const RubyCNTK::Dictionary&);
-    DictionaryValue(const DictionaryValue&);
+    DictionaryValue(const RubyCNTK::DictionaryValue&);
 
     bool HasValue();
     enum Type ValueType();
 
     void Save(const std::wstring& filename);
     static DictionaryValue Load(const std::wstring& filename);
+    static const char* TypeName(Type type);
 
     %extend{
-      bool __eq__(const DictionaryValue& other) {
+      /*
+      DictionaryValue(const std::vector<RubyCNTK::DictionaryValue>& value){
+        return new ::CNTK::DictionaryValue( (std::vector<::CNTK::DictionaryValue>) value);
+      }
+      */
+      bool __eq__(const RubyCNTK::DictionaryValue& other) {
         return (*$self) == other;
       }
 
@@ -453,11 +463,11 @@ namespace RubyCNTK {
     static Dictionary Load(const std::wstring& filename);
 
     %extend{
-      DictionaryValue& __getitem__(const std::wstring& key) {
+      RubyCNTK::DictionaryValue __getitem__(const std::wstring& key) {
         return (*$self)[key];
       }
 
-      void __setitem__(const std::wstring& key, const DictionaryValue v) {
+      void __setitem__(const std::wstring& key, const RubyCNTK::DictionaryValue& v) {
         (*$self)[key] = v;
       }
 
@@ -514,7 +524,6 @@ namespace RubyCNTK {
 
     }
   };
-
 
   // REMOVE
   //  Variable PlaceholderVariable(const NDShape& shape, enum DataType dataType, const std::wstring& name, const std::vector<Axis>& dynamicAxes);

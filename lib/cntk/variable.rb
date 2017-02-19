@@ -10,7 +10,7 @@ module CNTK
       if other.is_a?(Variable)
         CNTK.__times__(self, other)
       else
-        CNTK.__times__(self, CNTK.constant(other))
+        CNTK.__times__(self, CNTK::Ops.constant(other))
       end
     end
 
@@ -24,7 +24,7 @@ module CNTK
 
     def coerce(other)
       if other.is_a?(Numeric)
-        [CNTK.constant(other), self]
+        [CNTK::Ops.constant(other), self]
       else
         [other, self]
       end

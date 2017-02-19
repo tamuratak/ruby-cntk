@@ -9,12 +9,21 @@ module CNTK
       end
     end
 
-    def call(args)
-      if args.outputs.length == 1
-        return replace_placeholders({placeholders[0] => args.output})
+    def call(func)
+      if func.outputs.length == 1
+        return replace_placeholders({placeholders[0] => func.output})
       else
-        raise "not implemented"
+        raise "the outputs of given Funtion object must has 1 length."
       end
+    end
+
+    # forward function composition self(func(...))
+    def >>(func)
+      func.call(self)
+    end
+
+    def <<(func)
+      call(func)
     end
 
     def forward(*args)

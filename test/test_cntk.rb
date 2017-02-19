@@ -5,6 +5,7 @@ require "numo/narray"
 
 class TestCNTK < Test::Unit::TestCase
   include CNTK
+  include CNTK::Ops
 
   def test_f
     v = NDArrayView.new(DataType_Float, [2], [1.9, 1.2], DeviceDescriptor.default_device(), true)
@@ -88,9 +89,9 @@ class TestCNTK < Test::Unit::TestCase
   def test_function_call
     v0 = NDArrayView.new(DataType_Double, [1], [1.9], DeviceDescriptor.default_device(), true)
     v = input_variable([1], dtype: DataType_Double)
-    f1 = __sin__(v)
-    x = placeholder_variable([1])
-    f2 = __sin__(x)
+    f1 = sin(v)
+    x = placeholder_variable()
+    f2 = sin(x)
     f3 = f2.(f1)
     r = f3.forward({v => Value.new(v0)})
     assert_equal([Math::sin(Math::sin(1.9))],
@@ -102,6 +103,18 @@ class TestCNTK < Test::Unit::TestCase
     f = CNTK.__sin__(v)
     r = f.forward({ v => Numo::SFloat[Math::PI/2] })
     assert_equal([1.0], r[0].values[0].data.to_vec )
+  end
+
+  def test_func_shift_op
+    v0 = NDArrayView.new(DataType_Double, [1], [1.9], DeviceDescriptor.default_device(), true)
+    v = input_variable([1], dtype: DataType_Double)
+    f1 = sin(v)
+    x = placeholder_variable()
+    f2 = sin(x)
+    f3 = f1 >> f2
+    r = f3.forward({v => Value.new(v0)})
+    assert_equal([Math::sin(Math::sin(1.9))],
+                 r[0].values[0].data.to_vec)
   end
 
   def test_narray
