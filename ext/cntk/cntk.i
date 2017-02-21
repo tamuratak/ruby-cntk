@@ -76,12 +76,13 @@ namespace RubyCNTK {
 %template(StdUMapVariablevariable) std::unordered_map< RubyCNTK::Variable, RubyCNTK::Variable >;
 %template(StdUSetVariable) std::unordered_set<RubyCNTK::Variable>;
 %template(StdUSetDistributedWorkerDescriptor) std::unordered_set<RubyCNTK::DistributedWorkerDescriptor>;
-
+%template(StdUMapStreamInfoMinibatchData) std::unordered_map<RubyCNTK::StreamInformation, RubyCNTK::MinibatchData>;
 
 ///************************************
 /// renaming rule
 ///
 ///************************************
+%rename("%(strip:[m_])s") "";
 %rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer$") "";
 %rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer$") "";
 %rename("%(utitle)s", %$ismember, %$isfunction) "";
@@ -962,6 +963,12 @@ namespace RubyCNTK {
   //  RubyCNTK::DistributedLearnerPtr CreateQuantizedDataParallelDistributedLearner(QuantizedDistributedCommunicatorPtr communicator, LearnerPtr learner, size_t distributeAfterSamples, bool useAsyncBufferedParameterUpdate = false);
 
 
+  %rename(name) StreamInformation::m_name;
+  %rename(id)  StreamInformation::m_id;
+  %rename(storage_format) StreamInformation::m_storageFormat;
+  %rename(element_type) StreamInformation::m_elementType;
+  %rename(sample_layout) StreamInformation::m_sampleLayout;
+
   struct StreamInformation {
     std::wstring m_name;
     size_t m_id;
@@ -1026,8 +1033,30 @@ namespace RubyCNTK {
     static const size_t InfiniteSamples  = SIZE_MAX;
     static const size_t DefaultRandomizationWindow = SIZE_MAX - 2;
 
+    virtual ~MinibatchSource();
+
     const std::unordered_set<RubyCNTK::StreamInformation>& StreamInfos() = 0;
+
+    const std::unordered_map<StreamInformation, MinibatchData>& 
+    GetNextMinibatch(size_t minibatchSizeInSamples, 
+                     const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice());
     
+    const std::unordered_map<StreamInformation, MinibatchData>& 
+    GetNextMinibatch(size_t minibatchSizeInSequences,
+                     size_t minibatchSizeInSamples,
+                     const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice());
+
+    virtual const std::unordered_map<StreamInformation, MinibatchData>& 
+    GetNextMinibatch(size_t minibatchSizeInSequences,
+                     size_t minibatchSizeInSamples,
+                     size_t numberOfWorkers,
+                     size_t workerRank,
+                     const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice()) = 0;
+
+    virtual Dictionary GetCheckpointState() const;
+    virtual void RestoreFromCheckpoint(const Dictionary& /*checkpoint*/);
+    const StreamInformation& StreamInfo(const std::wstring& streamName);
+    const StreamInformation& StreamInfo(const Variable& variableToMatch);
   };
 
   MinibatchSourcePtr CreateCompositeMinibatchSource(const Dictionary& configuration);

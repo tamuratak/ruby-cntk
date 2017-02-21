@@ -1,6 +1,7 @@
 require "cntk/CNTK"
 require "cntk/dictionary"
 require "cntk/function"
+require "cntk/io"
 require "cntk/ndshape"
 require "cntk/ndarrayview"
 require "cntk/ops"
