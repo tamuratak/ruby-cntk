@@ -14,7 +14,7 @@ class TestCNTKReader < Test::Unit::TestCase
                                deserializers: [{ 
                                                  type: "CNTKTextFormatDeserializer",
                                                  "module" => "CNTKTextFormatReader",
-                                                 file: "/home/ubuntu/src/github/ruby-cntk/test/x3y1.txt",
+                                                 file: File.join(File.dirname(__FILE__), "x3y1.txt"),
                                                  maxErrors: 100,
                                                  skipSequenceIds: false,
                                                  traceLevel: 2,
@@ -25,8 +25,6 @@ class TestCNTKReader < Test::Unit::TestCase
                                                }]
                               }) 
 #    Dictionary.load("/home/ubuntu/src/github/ruby-cntk/test/reader.config")
-    p dict["x"].value_type
-
     __create_composite_minibatch_source__(dict)
   end
 
