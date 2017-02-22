@@ -48,7 +48,6 @@ namespace RubyCNTK {
   static RubyCNTK::DeviceDescriptor __cpu_device__ = RubyCNTK::DeviceDescriptor::CPUDevice();
   static RubyCNTK::DeviceDescriptor __best_device__ = RubyCNTK::DeviceDescriptor::BestDevice();
   static std::vector<RubyCNTK::DeviceDescriptor> __all_device__;
-  //  typedef std::pair<RubyCNTK::Variable, RubyCNTK::Variable> StdPairVariableVariable;
 };
 %}
 
@@ -82,16 +81,16 @@ namespace RubyCNTK {
 /// renaming rule
 ///
 ///************************************
-%rename("%(strip:[m_])s") "";
-%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer$") "";
-%rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer$") "";
+
+%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer|Learner$") "";
+%rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer|Learner$") "";
 %rename("%(utitle)s", %$ismember, %$isfunction) "";
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
 %rename(__forward__) RubyCNTK::Function::Forward;
 
-%typecheck(1000) RubyCNTK::NDShape const &, RubyNTK::NDShape {
+%typecheck(1000) RubyCNTK::NDShape const &, RubyCNTK::NDShape {
     // '1000' is the typecheck precedence code. It means: check after basic
     // types, but before arrays. See: http://www.swig.org/Doc3.0/Typemaps.html#Typemaps_overloading
   $1 = NIL_P(rb_check_array_type($input)) ? 0 : 1;
@@ -551,12 +550,18 @@ namespace RubyCNTK {
 
   Dictionary ConstantInitializer(double value = 0.0);
   Dictionary UniformInitializer(double scale, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary NormalInitializer(double scale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary XavierInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary GlorotUniformInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary GlorotNormalInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary HeUniformInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
-  Dictionary HeNormalInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank, int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary NormalInitializer(double scale, int outputRank = SentinelValueForInferParamInitRank, 
+                               int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary XavierInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank,
+                               int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary GlorotUniformInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank,
+                                      int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary GlorotNormalInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank,
+                                     int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary HeUniformInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank,
+                                  int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
+  Dictionary HeNormalInitializer(double scale = DefaultParamInitScale, int outputRank = SentinelValueForInferParamInitRank,
+                                 int filterRank = SentinelValueForInferParamInitRank, unsigned long seed = SentinelValueForAutoSelectRandomSeed);
   Dictionary BilinearInitializer(size_t kernelWidth, size_t kernelHeight);
   Dictionary RandomInitializerWithRank(const Dictionary& initializer, int outputRank, int filterRank);
 
@@ -564,10 +569,6 @@ namespace RubyCNTK {
   public:
     Parameter(const Variable& variable);
     Parameter(const NDArrayViewPtr& value, const std::wstring& name = L"");
-
-    // REMOVE
-    // template<typename ElemType>
-    // Parameter(const NDShape& shape, ElemType initValue, const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice(), const std::wstring& name = L"");
 
     Parameter(const NDShape& shape, enum DataType dataType, double initValue, const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice(), const std::wstring& name = L"");
     Parameter(const NDShape& shape, enum DataType dataType, const Dictionary& initializer, const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice(), const std::wstring& name = L"");
@@ -580,17 +581,10 @@ namespace RubyCNTK {
 
   };
 
-  // REMOVE
-  // %template(ParameterFloat) RubyCNTK::Parameter::Parameter<float>;
-  // %template(ParameterDouble) RubyCNTK::Parameter::Parameter<double>;
-
   class Constant : public Variable {
   public:
     Constant(const Variable& variable);
     Constant(const NDArrayViewPtr& value, const std::wstring& name = L"");
-
-    template<typename ElemType>
-    Constant(const NDShape& shape, ElemType initValue, const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice(), const std::wstring& name = L"");
 
     Constant(const NDShape& shape, enum DataType dataType, double initValue, const DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice(), const std::wstring& name = L"");
     static Constant Scalar(enum DataType dataType, double value, const ::CNTK::DeviceDescriptor& device = DeviceDescriptor::CPUDevice());
@@ -602,19 +596,11 @@ namespace RubyCNTK {
 
   };
 
-%template(ConstantFloat) RubyCNTK::Constant::Constant<float>;
-%template(ConstantDouble) RubyCNTK::Constant::Constant<double>;
-
   class Value {
   public:
     Value(const NDArrayViewPtr& data);
     Value(const NDArrayViewPtr& data, const NDMaskPtr& mask);
     
-    template <typename ElementType>
-    static ValuePtr Create(const NDShape& sampleShape, const std::vector<std::vector<ElementType>>& sequences, const std::vector<bool>& sequenceStartFlags, const DeviceDescriptor& device, bool readOnly = false);
-    template <typename ElementType>
-    static ValuePtr Create(const NDShape& sampleShape, const std::vector<std::vector<ElementType>>& sequences, const DeviceDescriptor& device, bool readOnly = false);
-
     ~Value();
     //    DeviceDescriptor Device();
     enum DataType GetDataType();
@@ -630,8 +616,6 @@ namespace RubyCNTK {
     ValuePtr Alias(bool readOnly = false);
     void CopyFrom(const Value& source);
     void CopyVariableValueTo(const Variable& outputVariable, std::vector<std::vector<size_t>>& sequences);
-    
-
 
   };
 
@@ -854,37 +838,44 @@ namespace RubyCNTK {
   {
   public:
     enum class UnitType : unsigned int
-    { Sample = 0, Minibatch = 1, };
+    { Sample = 0, Minibatch = 1, }; 
     //    static const size_t EntireSweep = 0;
-
-    TrainingParameterSchedule(T value, UnitType unit);
-    TrainingParameterSchedule(const std::vector<T>& schedule, UnitType unit, size_t epochSize = 1);
-    TrainingParameterSchedule(const std::vector<std::pair<size_t, T>>& schedule, UnitType unit, size_t epochSize = 1);
+    
+    TrainingParameterSchedule(T value, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit);
+    TrainingParameterSchedule(const std::vector<T>& schedule, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
+    TrainingParameterSchedule(const std::vector<std::pair<size_t, T>>& schedule, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
     
   };
-    
-  %template(LearningRateSchedule) TrainingParameterSchedule<double>;
-
-  template <typename T, typename TrainingParameterSchedule<T>::UnitType U>
-  class TrainingParameterPerUnitSchedule : public TrainingParameterSchedule<T>
+  
+  %template(MomentumSchedule) RubyCNTK::TrainingParameterSchedule<double>;
+  
+  %rename(MinibatchSizeSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample>;  
+  class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample> // : public TrainingParameterSchedule<double>
   {
   public:
     TrainingParameterPerUnitSchedule(double value);
-    TrainingParameterPerUnitSchedule(const std::vector<double>& schedule, size_t epochSize = 1);    
+    TrainingParameterPerUnitSchedule(const std::vector<double>& schedule, size_t epochSize = 1);
     TrainingParameterPerUnitSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = 1);
     
     const double __getitem__(size_t count);
-    };
-
-  %template(TrainingParameterPerSampleSchedule) TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Sample>;
+  };
   
-  typedef TrainingParameterSchedule<double> MomentumSchedule;
+  %rename(TrainingParameterPerMinibatchSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch>;
+  class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> // : public TrainingParameterSchedule<double>
+  {
+  public:
+    TrainingParameterPerUnitSchedule(double value);
+    TrainingParameterPerUnitSchedule(const std::vector<double>& schedule, size_t epochSize = 1);
+    TrainingParameterPerUnitSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = 1);
+
+    const double __getitem__(size_t count);
+  };
 
   struct AdditionalLearningOptions
   {
     double l1RegularizationWeight = 0.0;
     double l2RegularizationWeight = 0.0;
-    TrainingParameterPerUnitSchedule<double, TrainingParameterSchedule<double>::UnitType::Minibatch> gaussianNoiseInjectionStdDev = 0.0;
+    RubyCNTK::TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> gaussianNoiseInjectionStdDev = 0.0;
     double gradientClippingThresholdPerSample = std::numeric_limits<double>::infinity();
     bool gradientClippingWithTruncation = true;
   };
@@ -912,23 +903,23 @@ namespace RubyCNTK {
 
   LearnerPtr MomentumSGDLearner(const std::vector<Parameter>& parameters,
                                 const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                                const MomentumSchedule& momentumSchedule,
+                                const RubyCNTK::MomentumSchedule& momentumSchedule,
                                 bool unitGain = DefaultUnitGainValue(),
                                 AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
   LearnerPtr NesterovLearner(const std::vector<Parameter>& parameters,
                              const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                             const MomentumSchedule& momentumSchedule,
+                             const RubyCNTK::MomentumSchedule& momentumSchedule,
                              bool unitGain = DefaultUnitGainValue(),
                              AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
-  static MomentumSchedule DefaultVarianceMomentum = MomentumAsTimeConstantSchedule(2 * 3600 * 100);
+  static RubyCNTK::MomentumSchedule DefaultVarianceMomentum = MomentumAsTimeConstantSchedule(2 * 3600 * 100);
 
   LearnerPtr AdamLearner(const std::vector<Parameter>& parameters,
                          const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                         const MomentumSchedule& momentumSchedule,
+                         const RubyCNTK::MomentumSchedule& momentumSchedule,
                          bool unitGain = DefaultUnitGainValue(),
-                         const MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
+                         const RubyCNTK::MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
                          bool lowMemory = true,
                          AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
@@ -991,14 +982,16 @@ namespace RubyCNTK {
 
     bool TrainMinibatch(const std::unordered_map<Variable, MinibatchData>& arguments, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     bool TrainMinibatch(const std::unordered_map<Variable, ValuePtr>& arguments, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
-    bool TrainMinibatch(const std::unordered_map<Variable, MinibatchData>& arguments, std::unordered_map<Variable, ValuePtr>& outputsToFetch, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
-    bool TrainMinibatch(const std::unordered_map<Variable, ValuePtr>& arguments, std::unordered_map<Variable, ValuePtr>& outputsToFetch, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
+    bool TrainMinibatch(const std::unordered_map<Variable, MinibatchData>& arguments, std::unordered_map<Variable, ValuePtr>& outputsToFetch, 
+                        const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
+    bool TrainMinibatch(const std::unordered_map<Variable, ValuePtr>& arguments, std::unordered_map<Variable, ValuePtr>& outputsToFetch, 
+                        const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     double TestMinibatch(const std::unordered_map<Variable, MinibatchData>& arguments, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     double TestMinibatch(const std::unordered_map<Variable, ValuePtr>& arguments, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
 
     void SaveCheckpoint(const std::wstring& filePath, Dictionary externalState = Dictionary());
     Dictionary RestoreFromCheckpoint(const std::wstring& filePath);
-    
+
     FunctionPtr Model();
     FunctionPtr LossFunction();
     FunctionPtr EvaluationFunction();
@@ -1151,8 +1144,6 @@ namespace RubyCNTK {
   DistributedCommunicatorPtr MPICommunicator();
   QuantizedDistributedCommunicatorPtr QuantizedMPICommunicator(bool zeroThresholdFor1Bit, bool useQuantizationForSelfStripe, size_t numQuantizationBits);
 
-  typedef TrainingParameterPerUnitSchedule<size_t, TrainingParameterSchedule<size_t>::UnitType::Sample> MinibatchSizeSchedule;
-
   class TrainingSession {
     struct PeriodicAction
     {
@@ -1166,11 +1157,11 @@ namespace RubyCNTK {
                     const MinibatchSourcePtr& trainingSource,
                     const TrainerPtr& trainer,
                     const std::unordered_map<Variable, StreamInformation>& modelInputToMinibatchSourceStream,
-                    const MinibatchSizeSchedule& minibatchSizeSchedule,
+                    const RubyCNTK::MinibatchSizeSchedule& minibatchSizeSchedule,
                     size_t checkpointFrequencyInSamples,
                     const std::wstring& checkPointFileName,
                     const MinibatchSourcePtr& crossValidationSource = nullptr,
-                    const MinibatchSizeSchedule& crossValidationSchedule = MinibatchSizeSchedule(1),
+                    const RubyCNTK::MinibatchSizeSchedule& crossValidationSchedule = RubyCNTK::MinibatchSizeSchedule(1),
                     size_t crossValidationFrequencyInSamples = std::numeric_limits<size_t>::max(),
                     bool restoreFromCheckpointIfExists = true,
                     bool keepExistingCheckpoints = false,
@@ -1196,11 +1187,11 @@ namespace RubyCNTK {
                              const MinibatchSourcePtr& trainingSource,
                              const TrainerPtr& trainer,
                              const std::unordered_map<Variable, StreamInformation>& modelInputToMinibatchSourceStream,
-                             const MinibatchSizeSchedule& minibatchSizeSchedule,
+                             const RubyCNTK::MinibatchSizeSchedule& minibatchSizeSchedule,
                              size_t checkpointFrequencyInSamples,
                              const std::wstring& checkPointFileName,
                              const MinibatchSourcePtr& crossValidationSource = nullptr,
-                             const MinibatchSizeSchedule& crossValidationSchedule = MinibatchSizeSchedule(1),
+                             const RubyCNTK::MinibatchSizeSchedule& crossValidationSchedule = RubyCNTK::MinibatchSizeSchedule(1),
                              size_t crossValidationFrequencyInSamples = std::numeric_limits<size_t>::max(),
                              bool restoreFromCheckpointIfExists = true,
                              bool keepExistingCheckpoints = false,
