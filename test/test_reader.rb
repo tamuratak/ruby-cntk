@@ -1,6 +1,7 @@
 require "test/unit"
 require "cntk"
 require "numo/narray"
+require "pp"
 
 class TestCNTKReader < Test::Unit::TestCase
   include CNTK
@@ -26,11 +27,13 @@ class TestCNTKReader < Test::Unit::TestCase
        }]
     }
     batch = create_composite_minibatch_source(dict)
-    batch_data = batch.get_next_minibatch(11)
+    batch_data = batch.get_next_minibatch(2)
+    pp batch_data
+    p batch_data["x"]
     batch_data.each{|k, v| 
       if k.name == "x"
-        p v.data.to_narray
-        p v.number_of_samples
+#        p v.data.to_narray
+#        p v.number_of_samples
       end
     }
   end
