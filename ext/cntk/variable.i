@@ -74,6 +74,7 @@
   Dictionary BilinearInitializer(size_t kernelWidth, size_t kernelHeight);
   Dictionary RandomInitializerWithRank(const Dictionary& initializer, int outputRank, int filterRank);
 
+%nodefaultctor Parameter;
   class Parameter : public Variable {
   public:
     Parameter(const Variable& variable);

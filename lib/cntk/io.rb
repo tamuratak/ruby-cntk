@@ -16,7 +16,8 @@ module CNTK
     __create_composite_minibatch_source__(dict)
   end
 
-  class StdUMapStreamInfoMinibatchData
+  # std::unordered_map<StreamInfo, MinibatchData>
+  class MinibatchTable 
     alias __get__ :[]
     def [](key)
       if key.respond_to?(:to_str)

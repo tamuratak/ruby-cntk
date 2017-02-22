@@ -14,7 +14,8 @@
   };
   
   %template(MomentumSchedule) RubyCNTK::TrainingParameterSchedule<double>;
-  
+  typedef RubyCNTK::TrainingParameterSchedule<double> LearningRateSchedule;
+
   %rename(MinibatchSizeSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample>;  
   class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample> // : public TrainingParameterSchedule<double>
   {

@@ -69,13 +69,14 @@ namespace RubyCNTK {
 
 %template() std::vector<RubyCNTK::DeviceDescriptor>;
 %template(StdVectorVariable) std::vector<RubyCNTK::Variable>;
+%template() std::vector<RubyCNTK::Parameter>;
 %template(StdVectorPairVariableVariable) std::vector< std::pair<RubyCNTK::Variable, RubyCNTK::Variable> >;
 %template(StdVectorDictionaryValue) std::vector< RubyCNTK::DictionaryValue >;
 %template(StdUMapVariableValue) std::unordered_map< RubyCNTK::Variable, RubyCNTK::ValuePtr >;
 %template(StdUMapVariablevariable) std::unordered_map< RubyCNTK::Variable, RubyCNTK::Variable >;
 %template(StdUSetVariable) std::unordered_set<RubyCNTK::Variable>;
 %template(StdUSetDistributedWorkerDescriptor) std::unordered_set<RubyCNTK::DistributedWorkerDescriptor>;
-%template(StdUMapStreamInfoMinibatchData) std::unordered_map<RubyCNTK::StreamInformation, RubyCNTK::MinibatchData>;
+%template(MinibatchTable) std::unordered_map<RubyCNTK::StreamInformation, RubyCNTK::MinibatchData>;
 
 ///************************************
 /// renaming rule
@@ -125,9 +126,6 @@ namespace RubyCNTK {
 //
 // In the future, we would just swtich to %include "CNTKLibrary.h". 
 //  
-
-
-
 namespace RubyCNTK {
   enum class DataType {
     Unknown,
@@ -207,6 +205,7 @@ namespace RubyCNTK {
 
   };
 
+  // dont change the order.
   %include "ndshape.i"
   %include "ndarrayview.i"
   %include "dictionary.i"
@@ -214,6 +213,8 @@ namespace RubyCNTK {
   %include "functions.i"
   %include "trainer.i"
   %include "io.i"
+  %include "dist.i"
+  %include "session.i"
 
   void ComputeInputPerDimMeansAndInvStdDevs(const MinibatchSourcePtr& minibatchSource,
                                             std::unordered_map<StreamInformation, 
@@ -222,7 +223,5 @@ namespace RubyCNTK {
   void SetMaxNumCPUThreads(size_t numCPUThreads);
   size_t GetMaxNumCPUThreads();
 
-  %include "dist.i"
-  %include "session.i"
 
 };
