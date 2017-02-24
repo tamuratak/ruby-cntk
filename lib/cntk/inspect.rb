@@ -1,7 +1,7 @@
 module CNTK
   module InspectUtil
     def inspect_methods_p(mthds)
-      s = mthds.map{|mth| "#{mth}=" + send(mth).inspect }.join(", ")
+      mthds.map{|mth| "#{mth}=" + send(mth).inspect }.join(", ")
     end
 
     def inspect_methods(mthds)

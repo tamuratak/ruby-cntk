@@ -16,7 +16,7 @@
   %template(MomentumSchedule) RubyCNTK::TrainingParameterSchedule<double>;
   typedef RubyCNTK::TrainingParameterSchedule<double> LearningRateSchedule;
 
-  %rename(MinibatchSizeSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample>;  
+  %rename(TrainingParameterPerSampleSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample>;  
   class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample> // : public TrainingParameterSchedule<double>
   {
   public:
@@ -26,7 +26,7 @@
     
     const double __getitem__(size_t count);
   };
-  
+
   %rename(TrainingParameterPerMinibatchSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch>;
   class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> // : public TrainingParameterSchedule<double>
   {
@@ -47,8 +47,17 @@
     bool gradientClippingWithTruncation = true;
   };
 
-  //  bool DefaultUnitGainValue();
-  //  void SetDefaultUnitGainValue(bool value);
+class MomentumAsTimeConstantSchedule: public TrainingParameterSchedule<double>
+{
+public:
+  MomentumAsTimeConstantSchedule(double value);  
+  MomentumAsTimeConstantSchedule(const std::vector<double>& schedule, size_t epochSize = FullDataSweep);
+  MomentumAsTimeConstantSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = FullDataSweep);
+  const double __getitem__(size_t count) const;
+};
+
+  bool DefaultUnitGainValue();
+  void SetDefaultUnitGainValue(bool value);
 
   %nodefaultctor Learner;
   class Learner {

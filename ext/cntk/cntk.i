@@ -69,7 +69,7 @@ namespace RubyCNTK {
 
 %template() std::vector<RubyCNTK::DeviceDescriptor>;
 %template(StdVectorVariable) std::vector<RubyCNTK::Variable>;
-%template() std::vector<RubyCNTK::Parameter>;
+// %template() std::vector<RubyCNTK::Parameter>;
 %template(StdVectorPairVariableVariable) std::vector< std::pair<RubyCNTK::Variable, RubyCNTK::Variable> >;
 %template(StdVectorDictionaryValue) std::vector< RubyCNTK::DictionaryValue >;
 %template(StdUMapVariableValue) std::unordered_map< RubyCNTK::Variable, RubyCNTK::ValuePtr >;
@@ -83,13 +83,15 @@ namespace RubyCNTK {
 ///
 ///************************************
 
-%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer|Learner$") "";
-%rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer|Learner$") "";
+%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer|GainValue$") "";
+%rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer|GainValue$") "";
 %rename("%(utitle)s", %$ismember, %$isfunction) "";
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
 %rename(__forward__) RubyCNTK::Function::Forward;
+%rename(l1_regularization_weight) RubyCNTK::AdditionalLearningOptions::l1RegularizationWeight;
+%rename(l2_regularization_weight) RubyCNTK::AdditionalLearningOptions::l2RegularizationWeight;
 
 %typecheck(1000) RubyCNTK::NDShape const &, RubyCNTK::NDShape {
     // '1000' is the typecheck precedence code. It means: check after basic

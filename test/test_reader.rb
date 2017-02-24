@@ -28,8 +28,6 @@ class TestCNTKReader < Test::Unit::TestCase
     }
     batch = create_composite_minibatch_source(dict)
     batch_data = batch.get_next_minibatch(2)
-    pp batch_data
-    p batch_data["x"]
     batch_data.each{|k, v| 
       if k.name == "x"
 #        p v.data.to_narray
