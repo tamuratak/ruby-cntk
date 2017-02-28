@@ -12,7 +12,7 @@ class TestTrain < Test::Unit::TestCase
     z = a * x
     z.parameters
     sch = MomentumSchedule.new(0.1, MomentumSchedule::UnitType_Sample)
-    CNTK::Learner.sgd_learner(z.parameters, sch)
+    CNTK::Learner.sgd(z.parameters, sch)
   end
 
   def test_learner_2
