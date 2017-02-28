@@ -8,16 +8,16 @@ module Ops
                      dynamic_axes: Axis.default_input_variable_dynamic_axes(), 
                      name: '')
     
-    __input_variable__(shape, is_sparse, dtype, needs_grad, name, dynamic_axes)
+    CNTK.__input_variable__(shape, is_sparse, dtype, needs_grad, name, dynamic_axes)
     
   end
   
   def output_variable(shape: nil, dtype: nil, dynamic_axes: nil, name: "")
-    __output_variable__(shape, dtype, dynamic_axes, name)
+    CNTK.__output_variable__(shape, dtype, dynamic_axes, name)
   end
 
   def placeholder_variable(shape: NDShape.unknown.dimensions(), name: "", dynamic_axes: Axis.unknown_dynamic_axes)
-    __placeholder_variable__(shape, name, dynamic_axes)
+    CNTK.__placeholder_variable__(shape, name, dynamic_axes)
   end
 
   def constant(*args)

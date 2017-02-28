@@ -11,7 +11,7 @@ class TestCNTK < Test::Unit::TestCase
     v = NDArrayView.new(DataType_Float, [2], [1.9, 1.2], DeviceDescriptor.default_device(), true)
     v = Value.new(v)
     x = input_variable([2])
-    f = __sin__(x)
+    f = CNTK.__sin__(x)
     out = StdUMapVariableValue.new()
     vo = NDArrayView.new(DataType_Float, [2,1,1], [1.0,1.0], DeviceDescriptor.default_device(), true)
     f.output.shape
@@ -33,7 +33,7 @@ class TestCNTK < Test::Unit::TestCase
     v = input_variable([2])
     m0 = NDArrayView.new(DataType_Float, [3,2], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
     m = input_variable([3,2])
-    f = __times__(m,v)
+    f = CNTK.__times__(m,v)
     r = f.forward({v => Value.new(v0), m => Value.new(m0)})
     assert_equal([1.0,2.0,3.0], r[0].values[0].data.to_vec)
 
@@ -43,7 +43,7 @@ class TestCNTK < Test::Unit::TestCase
 
     m = input_variable([3,1])
     v = input_variable([1,2])
-    f = __times__(m,v)
+    f = CNTK.__times__(m,v)
     r = f.forward( { v => Numo::SFloat[1,2].reshape(1,2),
                      m => Numo::SFloat[1,3,4].reshape(3,1) } )
     assert_equal(Numo::SFloat[[1,2],[3,6],[4,8]],
@@ -53,7 +53,7 @@ class TestCNTK < Test::Unit::TestCase
   def test_times_edge_cases
     v = input_variable([3])
     m = input_variable([3])
-    f = __times__(v,m)
+    f = CNTK.__times__(v,m)
     r = f.forward( { v => Numo::SFloat[1,0,0].reshape(3),
                      m => Numo::SFloat[1,2,3].reshape(3) } )
     assert_equal(Numo::SFloat[[1, 2, 3], 
@@ -77,13 +77,13 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_parameter
     parameter(init: 2)
-    parameter(init: uniform_initializer(1) )
+    parameter(init: CNTK.uniform_initializer(1) )
   end
 
   def test_scalar
     s = input_variable([])
     v = input_variable([1])
-    __times__(v,s)
+    CNTK.__times__(v,s)
   end
 
   def test_function_call

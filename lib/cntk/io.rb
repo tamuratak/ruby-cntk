@@ -13,7 +13,7 @@ module CNTK
       end
       dict = Dictionary.create(h)
     end
-    __create_composite_minibatch_source__(dict)
+    CNTK.__create_composite_minibatch_source__(dict)
   end
 
   # std::unordered_map<StreamInfo, MinibatchData>
