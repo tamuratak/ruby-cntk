@@ -42,12 +42,17 @@ module CNTK
         }
         b = __forward__(input, out)
         out = remove_dynamic_axes(out)
-        return [out, b]
+        return [b, out]
       end
     end
 
     def eval
-      forward({})
+      _, outmap = forward({})
+      if outmap.size > 1
+        outmap
+      else
+        outmap.values[0]
+      end
     end
 
     def convert_to_value(h)

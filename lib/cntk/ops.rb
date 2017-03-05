@@ -3,7 +3,7 @@ module Ops
 
   module OpsUtil
   class << self
-    def convert_to_variable(x)
+    def convert_to_variable(x, dtype=nil)
       case x
       when Variable
         x
@@ -75,20 +75,44 @@ module Ops
     end
   }
 
-  def transpose(x, axis1=0, axis2=1, name="")
-    x     = OpsUtil::convert_to_variable( x )
-    axis1 = OpsUtil::to_axis(axis1)
-    axis2 = OpsUtil::to_axis(axis2)
-    unless axis1.static_axis_index.abs <= x.shape.rank and axis2.static_axis_index.abs <= x.shape.rank
-      raise
-    end
-    CNTK.__transpose_axes__(x, axis1, axis2, name)
+  def alias(x, name="")
+    x = OpsUtil::convert_to_variable( x )
+    CNTK.__alias__(x, name)
+  end
+
+  def weighted_binary_cross_entropy(output, target, weight, name="")
+    output = OpsUtil::convert_to_variable( output )
+    target = OpsUtil::convert_to_variable( target )
+    weight = OpsUtil::convert_to_variable( weight )
+    CNTK.__weighted_binary_cross_entropy__(output, target, weight, name)
+  end
+
+  def cross_entropy_with_softmax(output, target, axis=0, name="")
+    output = OpsUtil::convert_to_variable( output )
+    target = OpsUtil::convert_to_variable( target )
+    axis = Axis.from_num(axis)
+    CNTK.__cross_entropy_with_softmax__(output, target, axis, name)
   end
 
   def combine(array, name="")
     a = array.map{|x| OpsUtil::convert_to_variable( x ) }
     CNTK.__combine__(a, name)
   end
+
+  def transpose(x, axis1=0, axis2=1, name="")
+    x = OpsUtil::convert_to_variable( x )
+
+    unless axis1.abs <= x.shape.rank and axis2.abs <= x.shape.rank
+      raise ArgumentError, "out of bounds"
+    end
+
+    axis1 = OpsUtil::to_axis(axis1)
+    axis2 = OpsUtil::to_axis(axis2)
+
+    CNTK.__transpose_axes__(x, axis1, axis2, name)
+  end
+
+
 
 end # module Ops
 end # module CNTK

@@ -1,4 +1,5 @@
 require "cntk/CNTK"
+require "cntk/axis"
 require "cntk/dictionary"
 require "cntk/function"
 require "cntk/inspect"

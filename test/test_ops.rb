@@ -13,12 +13,12 @@ class TestCNTK < Test::Unit::TestCase
     f = 2 * v
     r = f.forward( { v => Numo::SFloat[1,2,3] } )
     assert_equal(Numo::SFloat[2,4,6],
-                 r[0].values[0].to_narray)
+                 r[1].values[0].to_narray)
 
     f = v * 2
     r = f.forward( { v => Numo::SFloat[1,2,3] } )
     assert_equal(Numo::SFloat[2,4,6],
-                 r[0].values[0].to_narray)
+                 r[1].values[0].to_narray)
   end
 
   def test_constant_2
@@ -27,7 +27,11 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_transpose
     assert_equal( Numo::DFloat[*[[0,1],[2,3],[4,5]] ].transpose(1,0),
-                  transpose([[0,1],[2,3],[4,5]], 0, 1).eval[0].values[0].to_narray)
+                  transpose([[0,1],[2,3],[4,5]], 0, 1).eval.to_narray)
+  end
+
+  def test_cross_entropy
+    cross_entropy_with_softmax([1, 2, 3, 4], [0.35, 0.15, 0.05, 0.45]).eval.to_narray
   end
 
 end

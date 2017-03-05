@@ -35,11 +35,11 @@ class TestCNTK < Test::Unit::TestCase
     m = input_variable([3,2])
     f = CNTK.__times__(m,v)
     r = f.forward({v => Value.new(v0), m => Value.new(m0)})
-    assert_equal([1.0,2.0,3.0], r[0].values[0].data.to_vec)
+    assert_equal([1.0,2.0,3.0], r[1].values[0].data.to_vec)
 
     r = f.forward( { v => Numo::SFloat[1,0], 
                      m => Numo::SFloat[[1,2],[3,4],[5,6]] })
-    assert_equal([1.0,3.0,5.0], r[0].values[0].data.to_vec)
+    assert_equal([1.0,3.0,5.0], r[1].values[0].data.to_vec)
 
     m = input_variable([3,1])
     v = input_variable([1,2])
@@ -47,7 +47,7 @@ class TestCNTK < Test::Unit::TestCase
     r = f.forward( { v => Numo::SFloat[1,2].reshape(1,2),
                      m => Numo::SFloat[1,3,4].reshape(3,1) } )
     assert_equal(Numo::SFloat[[1,2],[3,6],[4,8]],
-                 r[0].values[0].to_narray )
+                 r[1].values[0].to_narray )
   end
 
   def test_times_edge_cases
@@ -59,7 +59,7 @@ class TestCNTK < Test::Unit::TestCase
     assert_equal(Numo::SFloat[[1, 2, 3], 
                               [0, 0, 0], 
                               [0, 0, 0]],
-                 r[0].values[0].to_narray )
+                 r[1].values[0].to_narray )
   end
 
   def test_parameter
@@ -82,14 +82,14 @@ class TestCNTK < Test::Unit::TestCase
     f3 = f2.(f1)
     r = f3.forward({v => Value.new(v0)})
     assert_equal([Math::sin(Math::sin(1.9))],
-                 r[0].values[0].data.to_vec)
+                 r[1].values[0].data.to_vec)
   end
 
   def test_function_forward
     v = input_variable([1])
     f = CNTK.__sin__(v)
     r = f.forward({ v => Numo::SFloat[Math::PI/2] })
-    assert_equal([1.0], r[0].values[0].data.to_vec )
+    assert_equal([1.0], r[1].values[0].data.to_vec )
   end
 
   def test_func_shift_op
@@ -101,7 +101,7 @@ class TestCNTK < Test::Unit::TestCase
     f3 = f1 >> f2
     r = f3.forward({v => Value.new(v0)})
     assert_equal([Math::sin(Math::sin(1.9))],
-                 r[0].values[0].data.to_vec)
+                 r[1].values[0].data.to_vec)
   end
 
   def test_narray
