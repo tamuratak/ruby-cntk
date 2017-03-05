@@ -66,9 +66,20 @@ namespace CNTK {
 };
 
 
-%template()                                   std::vector<CNTK::DeviceDescriptor>;
-%template(StdVectorVariable)                  std::vector<CNTK::Variable>;
-%template()                  std::vector<CNTK::LearnerPtr>;
+%template() std::vector<CNTK::Variable>;
+%template() std::vector<CNTK::OutputVariable>;
+%template() std::vector<CNTK::Parameter>;
+%template() std::vector<CNTK::Constant>;
+%template() std::vector<CNTK::Axis>;
+%template() std::vector<CNTK::DeviceDescriptor>;
+%template() std::vector<CNTK::StreamConfiguration>;
+%template() std::vector<std::shared_ptr<CNTK::NDArrayView>>;
+%template() std::vector<std::shared_ptr<CNTK::Value>>;
+%template() std::vector<std::shared_ptr<CNTK::Function>>;
+%template() std::vector<std::shared_ptr<CNTK::Learner>>;
+%template() std::vector<std::shared_ptr<CNTK::DistributedLearner>>;
+%template() std::vector<std::shared_ptr<CNTK::Trainer>>;
+
 // %template() std::vector<CNTK::Parameter>;
 %template(StdVectorPairVariableVariable)      std::vector< std::pair<CNTK::Variable, CNTK::Variable> >;
 %template(StdVectorDictionaryValue)           std::vector< CNTK::DictionaryValue >;

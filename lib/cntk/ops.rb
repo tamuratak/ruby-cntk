@@ -2,7 +2,8 @@ module CNTK
 module Ops
 
   module OpsUtil
-    def self.convert_to_variable(x)
+  class << self
+    def convert_to_variable(x)
       case x
       when Variable
         x
@@ -12,6 +13,11 @@ module Ops
         raise ArgumentError, "CNTK::Variable, Numo::NArray, or Array expected"
       end
     end
+
+    def to_axis(n)
+      Axis.new(-n-1)
+    end
+  end
   end
 
   module_function
@@ -34,7 +40,6 @@ module Ops
   end
 
   def constant(*args)
-    args
     val = args[0]
     if val.is_a?(Array)
       args[0] = Numo::DFloat[*val]
@@ -71,7 +76,13 @@ module Ops
   }
 
   def transpose(x, axis1=0, axis2=1, name="")
-
+    x     = OpsUtil::convert_to_variable( x )
+    axis1 = OpsUtil::to_axis(axis1)
+    axis2 = OpsUtil::to_axis(axis2)
+    unless axis1.static_axis_index.abs <= x.shape.rank and axis2.static_axis_index.abs <= x.shape.rank
+      raise
+    end
+    CNTK.__transpose_axes__(x, axis1, axis2, name)
   end
 
   def combine(array, name="")

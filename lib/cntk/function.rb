@@ -46,6 +46,10 @@ module CNTK
       end
     end
 
+    def eval
+      forward({})
+    end
+
     def convert_to_value(h)
       input = {}
       h.each_pair{|k,val|
@@ -61,7 +65,8 @@ module CNTK
     #FIXME
     # we must add dynamic axes?
     def required_output_shape(ov)
-      ov.shape().to_a + [1,1]
+      sz = ov.dynamic_axes.size
+      ov.shape().to_a + [1] * sz
     end
 
     def required_output_buf(ov)
