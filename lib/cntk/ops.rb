@@ -46,12 +46,12 @@ module Ops
     Parameter.create(*args)
   end
 
-  ["__negate__", "__sigmoid__", "__tanh__", "__sin__", "__cos__", "__re_lu__",
+  (["__negate__", "__sigmoid__", "__tanh__", "__sin__", "__cos__", "__re_lu__",
    "__exp__", "__log__", "__square__", "__sqrt__", "__round__", "__floor__",
-   "__ceil__", "__reciprocal__", "__softmax__", "__hardmax__"].each{|orig_name|
+   "__ceil__", "__reciprocal__", "__softmax__", "__hardmax__"] ).each{|orig_name|
     mth_name = orig_name.gsub(/_/, "")
     define_method(mth_name) do |*args|
-      x    = args[0] or raise ArgumentError
+      x    = OpsUtil::convert_to_variable( args[0] )
       name = args[1] || ""
       CNTK.send(orig_name, x, name)
     end
@@ -63,8 +63,8 @@ module Ops
    ["__cosine_distance__", "__binary_cross_entropy__", "__squared_error__"]).each{|orig_name|
     mth_name = orig_name.gsub(/__/, "")
     define_method(mth_name) do |*args|
-      x    = args[0] or raise ArgumentError
-      y    = args[1] or raise ArgumentError
+      x    = OpsUtil::convert_to_variable( args[0] )
+      y    = OpsUtil::convert_to_variable( args[1] )
       name = args[2] || ""
       CNTK.send(orig_name, x, y, name)
     end
@@ -72,6 +72,11 @@ module Ops
 
   def transpose(x, axis1=0, axis2=1, name="")
 
+  end
+
+  def combine(array, name="")
+    a = array.map{|x| OpsUtil::convert_to_variable( x ) }
+    CNTK.__combine__(a, name)
   end
 
 end # module Ops
