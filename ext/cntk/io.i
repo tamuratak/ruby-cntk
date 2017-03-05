@@ -13,7 +13,7 @@
     NDShape m_sampleLayout;
 
     %extend {
-      bool __eq__(const RubyCNTK::StreamInformation& other) const {
+      bool __eq__(const CNTK::StreamInformation& other) const {
         return (*$self) == other;
       }
     }
@@ -41,7 +41,7 @@
 
     virtual ~MinibatchSource();
 
-    const std::unordered_set<RubyCNTK::StreamInformation>& StreamInfos() = 0;
+    const std::unordered_set<CNTK::StreamInformation>& StreamInfos() = 0;
 
     const std::unordered_map<StreamInformation, MinibatchData>& 
     GetNextMinibatch(size_t minibatchSizeInSamples, 

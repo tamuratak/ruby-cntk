@@ -6,12 +6,12 @@
        virtual DistributedCommunicatorPtr GetCommunicator();
 
 
-      bool Update(std::unordered_map<RubyCNTK::Parameter, RubyCNTK::NDArrayViewPtr>& gradientValues, size_t minibatchSampleCount, bool sweepEnd = false) override;
-      virtual void ResetLearningRate(const RubyCNTK::LearningRateSchedule& learningRateSchedule);
+      bool Update(std::unordered_map<CNTK::Parameter, CNTK::NDArrayViewPtr>& gradientValues, size_t minibatchSampleCount, bool sweepEnd = false) override;
+      virtual void ResetLearningRate(const CNTK::LearningRateSchedule& learningRateSchedule);
       virtual double LearningRate();
       void ResetSmoothedGradients() override;
       virtual size_t ParallelizationAfter();
-      virtual bool Update(std::unordered_map<RubyCNTK::Parameter, RubyCNTK::NDArrayViewPtr>& gradientValues,
+      virtual bool Update(std::unordered_map<CNTK::Parameter, CNTK::NDArrayViewPtr>& gradientValues,
                           MinibatchInfo& minibatch);
     };
 
@@ -21,14 +21,14 @@
     bool IsMain();
 
     %extend{
-      bool __eq__(const RubyCNTK::DistributedWorkerDescriptor& other) {
+      bool __eq__(const CNTK::DistributedWorkerDescriptor& other) {
         return (*$self) == other;
       }
     }
   };
 
-  //  RubyCNTK::DistributedLearnerPtr CreateDataParallelDistributedLearner(DistributedCommunicatorPtr communicator, LearnerPtr learner, size_t distributeAfterSamples, bool useAsyncBufferedParameterUpdate = false);
-  //  RubyCNTK::DistributedLearnerPtr CreateQuantizedDataParallelDistributedLearner(QuantizedDistributedCommunicatorPtr communicator, LearnerPtr learner, size_t distributeAfterSamples, bool useAsyncBufferedParameterUpdate = false);
+  //  CNTK::DistributedLearnerPtr CreateDataParallelDistributedLearner(DistributedCommunicatorPtr communicator, LearnerPtr learner, size_t distributeAfterSamples, bool useAsyncBufferedParameterUpdate = false);
+  //  CNTK::DistributedLearnerPtr CreateQuantizedDataParallelDistributedLearner(QuantizedDistributedCommunicatorPtr communicator, LearnerPtr learner, size_t distributeAfterSamples, bool useAsyncBufferedParameterUpdate = false);
   
 
   class DistributedCommunicator

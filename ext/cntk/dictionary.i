@@ -24,11 +24,11 @@
     DictionaryValue(bool);
     DictionaryValue(size_t);
     DictionaryValue(double);
-    DictionaryValue(const std::vector<RubyCNTK::DictionaryValue>&);
+    DictionaryValue(const std::vector<CNTK::DictionaryValue>&);
     DictionaryValue(const Axis&);
     DictionaryValue(const std::wstring&);
-    DictionaryValue(const RubyCNTK::Dictionary&);
-    DictionaryValue(const RubyCNTK::DictionaryValue&);
+    DictionaryValue(const CNTK::Dictionary&);
+    DictionaryValue(const CNTK::DictionaryValue&);
 
     bool HasValue();
     enum Type ValueType();
@@ -39,11 +39,11 @@
 
     %extend{
       /*
-      DictionaryValue(const std::vector<RubyCNTK::DictionaryValue>& value){
+      DictionaryValue(const std::vector<CNTK::DictionaryValue>& value){
         return new ::CNTK::DictionaryValue( (std::vector<::CNTK::DictionaryValue>) value);
       }
       */
-      bool __eq__(const RubyCNTK::DictionaryValue& other) {
+      bool __eq__(const CNTK::DictionaryValue& other) {
         return (*$self) == other;
       }
 
@@ -68,23 +68,23 @@
       }
 
       Axis& Value_axis__() {
-        return $self->Value<RubyCNTK::Axis>();
+        return $self->Value<CNTK::Axis>();
       }
 
       std::wstring& Value_wstring__() {
         return $self->Value<std::wstring>();
       }
 
-      std::vector<RubyCNTK::DictionaryValue>& Value_vec_dict_value__() {
-        return $self->Value<std::vector<RubyCNTK::DictionaryValue> >();
+      std::vector<CNTK::DictionaryValue>& Value_vec_dict_value__() {
+        return $self->Value<std::vector<CNTK::DictionaryValue> >();
       }
 
-      RubyCNTK::Dictionary& Value_dict__() {
-        return $self->Value<RubyCNTK::Dictionary>();
+      CNTK::Dictionary& Value_dict__() {
+        return $self->Value<CNTK::Dictionary>();
       }
 
-      RubyCNTK::NDArrayView& Value_ndarrayview__() {
-        return $self->Value<RubyCNTK::NDArrayView>();
+      CNTK::NDArrayView& Value_ndarrayview__() {
+        return $self->Value<CNTK::NDArrayView>();
       }
 
     }
@@ -103,11 +103,11 @@
     static Dictionary Load(const std::wstring& filename);
 
     %extend{
-      RubyCNTK::DictionaryValue __getitem__(const std::wstring& key) {
+      CNTK::DictionaryValue __getitem__(const std::wstring& key) {
         return (*$self)[key];
       }
 
-      void __setitem__(const std::wstring& key, const RubyCNTK::DictionaryValue& v) {
+      void __setitem__(const std::wstring& key, const CNTK::DictionaryValue& v) {
         (*$self)[key] = v;
       }
 

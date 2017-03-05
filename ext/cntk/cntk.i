@@ -22,19 +22,19 @@
 %template(StdVectorVectorFloat) std::vector<std::vector<float> >;
 %template(StdVectorVectorDouble) std::vector<std::vector<double> >;
 
-%shared_ptr(RubyCNTK::Trainer)
-%shared_ptr(RubyCNTK::TrainingSession)
-%shared_ptr(RubyCNTK::BasicTrainingSession)
-%shared_ptr(RubyCNTK::Function)
-%shared_ptr(RubyCNTK::NDArrayView)
-%shared_ptr(RubyCNTK::Value)
-%shared_ptr(RubyCNTK::NDMask)
-%shared_ptr(RubyCNTK::BackPropState)
-%shared_ptr(RubyCNTK::Learner)
-%shared_ptr(RubyCNTK::MinibatchSource)
-%shared_ptr(RubyCNTK::DistributedCommunicator)
-%shared_ptr(RubyCNTK::QuantizedDistributedCommunicator)
-%shared_ptr(RubyCNTK::DistributedLearner)
+%shared_ptr(CNTK::Trainer)
+%shared_ptr(CNTK::TrainingSession)
+%shared_ptr(CNTK::BasicTrainingSession)
+%shared_ptr(CNTK::Function)
+%shared_ptr(CNTK::NDArrayView)
+%shared_ptr(CNTK::Value)
+%shared_ptr(CNTK::NDMask)
+%shared_ptr(CNTK::BackPropState)
+%shared_ptr(CNTK::Learner)
+%shared_ptr(CNTK::MinibatchSource)
+%shared_ptr(CNTK::DistributedCommunicator)
+%shared_ptr(CNTK::QuantizedDistributedCommunicator)
+%shared_ptr(CNTK::DistributedLearner)
 
 
 %{
@@ -43,41 +43,40 @@
 %}
 %inline %{
 namespace CNTK {};
-namespace RubyCNTK {
-  using namespace CNTK;
-  static RubyCNTK::DeviceDescriptor __cpu_device__ = RubyCNTK::DeviceDescriptor::CPUDevice();
-  static RubyCNTK::DeviceDescriptor __best_device__ = RubyCNTK::DeviceDescriptor::BestDevice();
-  static std::vector<RubyCNTK::DeviceDescriptor> __all_device__;
+namespace CNTK {
+  static CNTK::DeviceDescriptor __cpu_device__ = CNTK::DeviceDescriptor::CPUDevice();
+  static CNTK::DeviceDescriptor __best_device__ = CNTK::DeviceDescriptor::BestDevice();
+  static std::vector<CNTK::DeviceDescriptor> __all_device__;
 };
 %}
 
-namespace RubyCNTK {
-  typedef std::shared_ptr<RubyCNTK::NDArrayView> NDArrayViewPtr;
-  typedef std::shared_ptr<RubyCNTK::Dictionary> DictionaryPtr;
-  typedef std::shared_ptr<RubyCNTK::Function> FunctionPtr;
-  typedef std::shared_ptr<RubyCNTK::Value> ValuePtr;
-  typedef std::shared_ptr<RubyCNTK::NDMask> NDMaskPtr;
-  typedef std::shared_ptr<RubyCNTK::BackPropState> BackPropStatePtr;
-  typedef std::shared_ptr<RubyCNTK::Learner> LearnerPtr;
-  typedef std::shared_ptr<RubyCNTK::DistributedCommunicator> DistributedCommunicatorPtr;
-  typedef std::shared_ptr<RubyCNTK::QuantizedDistributedCommunicator> QuantizedDistributedCommunicatorPtr;
-  typedef std::shared_ptr<RubyCNTK::Trainer> TrainerPtr;
-  typedef std::shared_ptr<RubyCNTK::MinibatchSource> MinibatchSourcePtr;
-  typedef std::shared_ptr<RubyCNTK::TrainingSession> TrainingSessionPtr;
+namespace CNTK {
+  typedef std::shared_ptr<CNTK::NDArrayView> NDArrayViewPtr;
+  typedef std::shared_ptr<CNTK::Dictionary> DictionaryPtr;
+  typedef std::shared_ptr<CNTK::Function> FunctionPtr;
+  typedef std::shared_ptr<CNTK::Value> ValuePtr;
+  typedef std::shared_ptr<CNTK::NDMask> NDMaskPtr;
+  typedef std::shared_ptr<CNTK::BackPropState> BackPropStatePtr;
+  typedef std::shared_ptr<CNTK::Learner> LearnerPtr;
+  typedef std::shared_ptr<CNTK::DistributedCommunicator> DistributedCommunicatorPtr;
+  typedef std::shared_ptr<CNTK::QuantizedDistributedCommunicator> QuantizedDistributedCommunicatorPtr;
+  typedef std::shared_ptr<CNTK::Trainer> TrainerPtr;
+  typedef std::shared_ptr<CNTK::MinibatchSource> MinibatchSourcePtr;
+  typedef std::shared_ptr<CNTK::TrainingSession> TrainingSessionPtr;
 };
 
 
-%template()                                   std::vector<RubyCNTK::DeviceDescriptor>;
-%template(StdVectorVariable)                  std::vector<RubyCNTK::Variable>;
-%template()                  std::vector<RubyCNTK::LearnerPtr>;
-// %template() std::vector<RubyCNTK::Parameter>;
-%template(StdVectorPairVariableVariable)      std::vector< std::pair<RubyCNTK::Variable, RubyCNTK::Variable> >;
-%template(StdVectorDictionaryValue)           std::vector< RubyCNTK::DictionaryValue >;
-%template(StdUMapVariableValue)               std::unordered_map< RubyCNTK::Variable, RubyCNTK::ValuePtr >;
-%template(StdUMapVariablevariable)            std::unordered_map< RubyCNTK::Variable, RubyCNTK::Variable >;
-%template(StdUSetVariable)                    std::unordered_set<RubyCNTK::Variable>;
-%template(StdUSetDistributedWorkerDescriptor) std::unordered_set<RubyCNTK::DistributedWorkerDescriptor>;
-%template(MinibatchTable)                     std::unordered_map<RubyCNTK::StreamInformation, RubyCNTK::MinibatchData>;
+%template()                                   std::vector<CNTK::DeviceDescriptor>;
+%template(StdVectorVariable)                  std::vector<CNTK::Variable>;
+%template()                  std::vector<CNTK::LearnerPtr>;
+// %template() std::vector<CNTK::Parameter>;
+%template(StdVectorPairVariableVariable)      std::vector< std::pair<CNTK::Variable, CNTK::Variable> >;
+%template(StdVectorDictionaryValue)           std::vector< CNTK::DictionaryValue >;
+%template(StdUMapVariableValue)               std::unordered_map< CNTK::Variable, CNTK::ValuePtr >;
+%template(StdUMapVariablevariable)            std::unordered_map< CNTK::Variable, CNTK::Variable >;
+%template(StdUSetVariable)                    std::unordered_set<CNTK::Variable>;
+%template(StdUSetDistributedWorkerDescriptor) std::unordered_set<CNTK::DistributedWorkerDescriptor>;
+%template(MinibatchTable)                     std::unordered_map<CNTK::StreamInformation, CNTK::MinibatchData>;
 
 ///************************************
 /// renaming rule
@@ -90,17 +89,17 @@ namespace RubyCNTK {
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
-%rename(__forward__) RubyCNTK::Function::Forward;
-%rename(l1_regularization_weight) RubyCNTK::AdditionalLearningOptions::l1RegularizationWeight;
-%rename(l2_regularization_weight) RubyCNTK::AdditionalLearningOptions::l2RegularizationWeight;
+%rename(__forward__) CNTK::Function::Forward;
+%rename(l1_regularization_weight) CNTK::AdditionalLearningOptions::l1RegularizationWeight;
+%rename(l2_regularization_weight) CNTK::AdditionalLearningOptions::l2RegularizationWeight;
 
-%typecheck(1000) RubyCNTK::NDShape const &, RubyCNTK::NDShape {
+%typecheck(1000) CNTK::NDShape const &, CNTK::NDShape {
     // '1000' is the typecheck precedence code. It means: check after basic
     // types, but before arrays. See: http://www.swig.org/Doc3.0/Typemaps.html#Typemaps_overloading
   $1 = NIL_P(rb_check_array_type($input)) ? 0 : 1;
 }
 
-%typemap(in) const RubyCNTK::NDShape& (RubyCNTK::NDShape tmp) {
+%typemap(in) const CNTK::NDShape& (CNTK::NDShape tmp) {
   VALUE arry = rb_check_array_type($input);
   if(NIL_P(arry)) {
     rb_raise(rb_eArgError, "Array expected"); SWIG_fail;
@@ -129,7 +128,7 @@ namespace RubyCNTK {
 //
 // In the future, we would just swtich to %include "CNTKLibrary.h". 
 //  
-namespace RubyCNTK {
+namespace CNTK {
   enum class DataType {
     Unknown,
     Float,
@@ -168,33 +167,33 @@ namespace RubyCNTK {
   {
   public:
     unsigned int Id();
-    RubyCNTK::DeviceKind Type();
+    CNTK::DeviceKind Type();
 
     %extend{
 
       %newobject CPUDevice;
-      static RubyCNTK::DeviceDescriptor* CPUDevice(){
-        return new RubyCNTK::DeviceDescriptor(RubyCNTK::DeviceDescriptor::CPUDevice());
+      static CNTK::DeviceDescriptor* CPUDevice(){
+        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::CPUDevice());
       }
 
       %newobject GPUDevice;
-      static RubyCNTK::DeviceDescriptor* GPUDevice(unsigned int deviceId){
-        return new RubyCNTK::DeviceDescriptor(RubyCNTK::DeviceDescriptor::GPUDevice(deviceId));
+      static CNTK::DeviceDescriptor* GPUDevice(unsigned int deviceId){
+        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::GPUDevice(deviceId));
       }
 
       %newobject DefaultDevice;
-      static RubyCNTK::DeviceDescriptor* DefaultDevice(){
-        return new RubyCNTK::DeviceDescriptor(RubyCNTK::DeviceDescriptor::DefaultDevice());
+      static CNTK::DeviceDescriptor* DefaultDevice(){
+        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::DefaultDevice());
       }
 
       %newobject UseDefaultDevice;
-      static RubyCNTK::DeviceDescriptor* UseDefaultDevice(){
-        return new RubyCNTK::DeviceDescriptor(RubyCNTK::DeviceDescriptor::UseDefaultDevice());
+      static CNTK::DeviceDescriptor* UseDefaultDevice(){
+        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::UseDefaultDevice());
       }
 
       %newobject BestDevice;
-      static RubyCNTK::DeviceDescriptor* BestDevice(){
-        return new RubyCNTK::DeviceDescriptor(RubyCNTK::DeviceDescriptor::BestDevice());
+      static CNTK::DeviceDescriptor* BestDevice(){
+        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::BestDevice());
       }
 
       bool __eq__(const DeviceDescriptor& other){

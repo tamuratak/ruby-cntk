@@ -31,7 +31,7 @@
     bool NeedsGradient();
 
     %extend{
-      RubyCNTK::FunctionPtr to_function() {
+      CNTK::FunctionPtr to_function() {
         return *$self;
       }
 

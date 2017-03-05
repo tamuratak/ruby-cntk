@@ -10,7 +10,7 @@ class TestTrain < Test::Unit::TestCase
     a = parameter(shape: [3], init: 1)
     x = input_variable([3])
     y = a * x
-    sch = MomentumSchedule.new(0.1, MomentumSchedule::UnitType_Sample)
+    sch = CNTK::Learner.training_parameter_schedule(1, :minibatch)
     learner = CNTK::Learner.sgd(y.parameters, sch)
 #    puts (CNTK.methods - Object.methods).map{|s| s.to_s.dump }.join(", ")
     z = input_variable([1])

@@ -1,4 +1,7 @@
 
+%ignore CNTK::TrainingParameterSchedule::operator=;
+%ignore CNTK::TrainingParameterSchedule::operator[];
+
   template <typename T>
   class TrainingParameterSchedule
   {
@@ -7,54 +10,65 @@
     { Sample = 0, Minibatch = 1, }; 
     //    static const size_t EntireSweep = 0;
     
-    TrainingParameterSchedule(T value, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit);
-    TrainingParameterSchedule(const std::vector<T>& schedule, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
-    TrainingParameterSchedule(const std::vector<std::pair<size_t, T>>& schedule, RubyCNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
-    
+    TrainingParameterSchedule(T value, CNTK::TrainingParameterSchedule<T>::UnitType unit);
+    TrainingParameterSchedule(const std::vector<T>& schedule, CNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
+    TrainingParameterSchedule(const std::vector<std::pair<size_t, T>>& schedule, CNTK::TrainingParameterSchedule<T>::UnitType unit, size_t epochSize = 1);
   };
-  
-  %template(MomentumSchedule) RubyCNTK::TrainingParameterSchedule<double>;
-  typedef RubyCNTK::TrainingParameterSchedule<double> LearningRateSchedule;
 
-  %rename(TrainingParameterPerSampleSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample>;  
-  class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Sample> // : public TrainingParameterSchedule<double>
+  %template(MomentumSchedule)   CNTK::TrainingParameterSchedule<double>;
+  typedef CNTK::TrainingParameterSchedule<double>  LearningRateSchedule;
+
+  template <typename T, typename U>
+  class TrainingParameterPerUnitSchedule : public TrainingParameterSchedule<T>
+  {
+  public:
+    TrainingParameterPerUnitSchedule(T value);
+    TrainingParameterPerUnitSchedule(const std::vector<T>& schedule, 
+                                     size_t epochSize = TrainingParameterSchedule<T>::FullDataSweep);
+    TrainingParameterPerUnitSchedule(const std::vector<std::pair<size_t, T>>& schedule, 
+                                     size_t epochSize = TrainingParameterSchedule<T>::FullDataSweep);
+  };
+
+  typedef TrainingParameterPerUnitSchedule<size_t, TrainingParameterSchedule<size_t>::UnitType::Sample> MinibatchSizeSchedule;
+
+%rename(TrainingParameterPerSampleSchedule) TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Sample>;
+  class TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Sample> : public TrainingParameterSchedule<double>
   {
   public:
     TrainingParameterPerUnitSchedule(double value);
     TrainingParameterPerUnitSchedule(const std::vector<double>& schedule, size_t epochSize = 1);
     TrainingParameterPerUnitSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = 1);
-    
     const double __getitem__(size_t count);
   };
 
-  %rename(TrainingParameterPerMinibatchSchedule) TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch>;
-  class TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> // : public TrainingParameterSchedule<double>
+%rename(TrainingParameterPerMinibatchSchedule) TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Minibatch>;
+class TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Minibatch>  : public TrainingParameterSchedule<double>
   {
   public:
     TrainingParameterPerUnitSchedule(double value);
     TrainingParameterPerUnitSchedule(const std::vector<double>& schedule, size_t epochSize = 1);
     TrainingParameterPerUnitSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = 1);
-
     const double __getitem__(size_t count);
   };
+
+  class MomentumAsTimeConstantSchedule: public TrainingParameterSchedule<double>
+  {
+  public:
+    MomentumAsTimeConstantSchedule(double value);
+    MomentumAsTimeConstantSchedule(const std::vector<double>& schedule, size_t epochSize = FullDataSweep);
+    MomentumAsTimeConstantSchedule(const std::vector<std::pair<size_t, double> >& schedule, size_t epochSize = FullDataSweep);
+  };
+
+
 
   struct AdditionalLearningOptions
   {
     double l1RegularizationWeight = 0.0;
     double l2RegularizationWeight = 0.0;
-    RubyCNTK::TrainingParameterPerUnitSchedule<double, RubyCNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> gaussianNoiseInjectionStdDev = 0.0;
+    CNTK::TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<double>::UnitType::Minibatch> gaussianNoiseInjectionStdDev = 0.0;
     double gradientClippingThresholdPerSample = std::numeric_limits<double>::infinity();
     bool gradientClippingWithTruncation = true;
   };
-
-class MomentumAsTimeConstantSchedule: public TrainingParameterSchedule<double>
-{
-public:
-  MomentumAsTimeConstantSchedule(double value);  
-  MomentumAsTimeConstantSchedule(const std::vector<double>& schedule, size_t epochSize = FullDataSweep);
-  MomentumAsTimeConstantSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = FullDataSweep);
-  const double __getitem__(size_t count) const;
-};
 
   bool DefaultUnitGainValue();
   void SetDefaultUnitGainValue(bool value);
@@ -67,40 +81,40 @@ public:
     virtual Dictionary CreateCheckpoint();
     virtual void RestoreFromCheckpoint(const Dictionary&);
     virtual ~Learner();
-    virtual void ResetLearningRate(const RubyCNTK::LearningRateSchedule& learningRateSchedule);
+    virtual void ResetLearningRate(const CNTK::LearningRateSchedule& learningRateSchedule);
     virtual void ResetSmoothedGradients() = 0;
     virtual double LearningRate();
     size_t TotalNumberOfSamplesSeen();
   };
 
   LearnerPtr SGDLearner(const std::vector<Parameter>& parameters,
-                        const RubyCNTK::LearningRateSchedule& learningRateSchedule,
+                        const CNTK::LearningRateSchedule& learningRateSchedule,
                         AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
   LearnerPtr MomentumSGDLearner(const std::vector<Parameter>& parameters,
-                                const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                                const RubyCNTK::MomentumSchedule& momentumSchedule,
+                                const CNTK::LearningRateSchedule& learningRateSchedule,
+                                const CNTK::MomentumSchedule& momentumSchedule,
                                 bool unitGain = DefaultUnitGainValue(),
                                 AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
   LearnerPtr NesterovLearner(const std::vector<Parameter>& parameters,
-                             const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                             const RubyCNTK::MomentumSchedule& momentumSchedule,
+                             const CNTK::LearningRateSchedule& learningRateSchedule,
+                             const CNTK::MomentumSchedule& momentumSchedule,
                              bool unitGain = DefaultUnitGainValue(),
                              AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
-  static RubyCNTK::MomentumSchedule DefaultVarianceMomentum = MomentumAsTimeConstantSchedule(2 * 3600 * 100);
+  static CNTK::MomentumSchedule DefaultVarianceMomentum = MomentumAsTimeConstantSchedule(2 * 3600 * 100);
 
   LearnerPtr AdamLearner(const std::vector<Parameter>& parameters,
-                         const RubyCNTK::LearningRateSchedule& learningRateSchedule,
-                         const RubyCNTK::MomentumSchedule& momentumSchedule,
+                         const CNTK::LearningRateSchedule& learningRateSchedule,
+                         const CNTK::MomentumSchedule& momentumSchedule,
                          bool unitGain = DefaultUnitGainValue(),
-                         const RubyCNTK::MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
+                         const CNTK::MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
                          bool lowMemory = true,
                          AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
   LearnerPtr RMSPropLearner(const std::vector<Parameter>& parameters,
-                            const RubyCNTK::LearningRateSchedule& learningRateSchedule,
+                            const CNTK::LearningRateSchedule& learningRateSchedule,
                             double gamma,
                             double inc,
                             double dec,
