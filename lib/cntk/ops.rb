@@ -13,10 +13,6 @@ module Ops
         raise ArgumentError, "CNTK::Variable, Numo::NArray, or Array expected"
       end
     end
-
-    def to_axis(n)
-      Axis.new(-n-1)
-    end
   end
   end
 
@@ -106,8 +102,8 @@ module Ops
       raise ArgumentError, "out of bounds"
     end
 
-    axis1 = OpsUtil::to_axis(axis1)
-    axis2 = OpsUtil::to_axis(axis2)
+    axis1 = Axis::from_num(axis1)
+    axis2 = Axis::from_num(axis2)
 
     CNTK.__transpose_axes__(x, axis1, axis2, name)
   end
