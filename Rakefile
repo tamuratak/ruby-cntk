@@ -22,14 +22,15 @@ file "ext/cntk/cntk_wrap.cxx" => Dir.glob("ext/cntk/#{swig_pat}") do
   Rake::Task["swg:cntk"].execute
 end
 
-task :ocl => ["ext/ocl/ocl_wrap.inc"]
-file "ext/ocl/ocl_wrap.inc" => Dir.glob("ext/ocl/#{swig_pat}") do
-   Rake::Task["swg:ocl"].execute
-end
-
 namespace :swg do
   task "cntk" do
     sh "swig -c++ -ruby -Wextra -module CNTK ext/cntk/cntk.i"
+    s = 
+      File.
+      read("ext/cntk/cntk_wrap.cxx").
+      gsub("((CNTK::TrainingParameterPerUnitSchedule< double,enum CNTK::TrainingParameterSchedule", 
+           "((CNTK::TrainingParameterPerUnitSchedule< double, CNTK::TrainingParameterSchedule")
+    File.open("ext/cntk/cntk_wrap.cxx", "w"){|io| io.write(s) }
   end
 end
 
@@ -38,6 +39,6 @@ Rake::TestTask.new do |t|
 end
 desc "Run tests"
 
-task :swig => [:cntk]
+task :swig => ["swg:cntk"]
 task :default => [:test]
 task :build => ["swg:cntk", :compile]
