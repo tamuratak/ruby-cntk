@@ -13,6 +13,7 @@ class TestTrain < Test::Unit::TestCase
     z.parameters
     sch = MomentumSchedule.new(0.1, MomentumSchedule::UnitType_Sample)
     CNTK::Learner.sgd(z.parameters, sch)
+#    puts (CNTK.methods - Object.methods).map{|s| s.to_s.dump }.join(", ")
   end
 
   def test_learner_2

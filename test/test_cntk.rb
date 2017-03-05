@@ -62,19 +62,6 @@ class TestCNTK < Test::Unit::TestCase
                  r[0].values[0].to_narray )
   end
 
-  def test_constant
-    v = input_variable([3])
-    f = 2 * v
-    r = f.forward( { v => Numo::SFloat[1,2,3] } )
-    assert_equal(Numo::SFloat[2,4,6],
-                 r[0].values[0].to_narray)
-
-    f = v * 2
-    r = f.forward( { v => Numo::SFloat[1,2,3] } )
-    assert_equal(Numo::SFloat[2,4,6],
-                 r[0].values[0].to_narray)
-  end
-
   def test_parameter
     parameter(init: 2)
     parameter(init: CNTK.uniform_initializer(1) )

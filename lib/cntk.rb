@@ -12,5 +12,5 @@ require "cntk/value"
 require "cntk/variable"
 
 module CNTK
-  remove_method *private_instance_methods(false)
+  remove_method( *private_instance_methods(false) )
 end

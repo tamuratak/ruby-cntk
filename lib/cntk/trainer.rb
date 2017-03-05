@@ -1,7 +1,9 @@
 module CNTK
+class Trainer
 
-# Train
+  def self.create_trainer(*args)
+    CNTK.__create_trainer__(*args)
+  end
 
-#end
-  
+end
 end
