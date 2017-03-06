@@ -28,7 +28,7 @@ module CNTK
 
     def forward(*args)
       if args.length > 1
-        return __forward__(*args)
+        return __forward__(*args) #FIXME
       elsif args.length == 1
         input = convert_to_value(args[0])
         out = StdUMapVariableValue.new()
@@ -46,8 +46,9 @@ module CNTK
       end
     end
 
-    def eval
-      _, outmap = forward({})
+    def eval(*args)
+      args = [{}] if args == []
+      _, outmap = forward(*args)
       if outmap.size > 1
         outmap
       else

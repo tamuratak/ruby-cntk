@@ -6,7 +6,14 @@ require "numo/narray"
 class TestCNTK < Test::Unit::TestCase
   include CNTK
   include CNTK::Ops
+  include Numo
 
+  def test_highest_precision_type
+    assert_equal( Numo::DFloat,
+                  OpsUtil::highest_precision_type( Numo::SFloat[1], 
+                                                   Numo::DFloat[1],
+                                                   constant(Numo::DFloat[1]) ) )
+  end
 
   def test_constant
     v = input_variable([3])
@@ -32,6 +39,30 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_cross_entropy
     cross_entropy_with_softmax([1, 2, 3, 4], [0.35, 0.15, 0.05, 0.45]).eval.to_narray
+  end
+
+  def test_lambda_rank
+    output = input_variable([1])
+    gain   = input_variable([1])
+    group  = input_variable([1])
+    lambda_rank(output, gain, group)
+  end
+
+  def test_classification_error
+    x = input_variable([1])
+    y = input_variable([1])
+#    p classification_error(Numo::SFloat[1], Numo::SFloat[1]).eval
+    f = classification_error(x, y)
+    f.eval({ x => Numo::SFloat[1], y => Numo::SFloat[0] }).to_narray
+  end
+
+  def test_convolution
+    img = SFloat[*(0..24).to_a].reshape(1,5,5)
+    x = input_variable(img.shape)
+    filter = SFloat[2,-1,-1,2].reshape(1,2,2)
+    kernel = constant(filter)
+    f = convolution(kernel: kernel, input: x, padding: [false])
+    f.eval({x => img}).to_narray
   end
 
 end

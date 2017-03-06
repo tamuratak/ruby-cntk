@@ -15,12 +15,15 @@
 %include std_pair.i
 %include std_shared_ptr.i
 
-%template(StdVectorSizeT) std::vector<size_t>;
-%template(StdVectorDouble) std::vector<double>;
-%template(StdVectorFloat) std::vector<float>;
-%template(StdVectorVectorSizeT) std::vector<std::vector<size_t> >;
-%template(StdVectorVectorFloat) std::vector<std::vector<float> >;
-%template(StdVectorVectorDouble) std::vector<std::vector<double> >;
+
+%template() std::vector<bool>;
+%template() std::vector<size_t>;
+%template() std::vector<float>;
+%template() std::vector<double>;
+%template() std::vector<std::vector<size_t>>;
+%template() std::vector<std::vector<float>>;
+%template() std::vector<std::vector<double>>;
+
 
 %shared_ptr(CNTK::Trainer)
 %shared_ptr(CNTK::TrainingSession)

@@ -1,6 +1,9 @@
+require "numo/narray"
+
 module CNTK
 
   class Variable
+    DataType = { DataType_Float => Numo::SFloat, DataType_Double => Numo::DFloat, DataType_Unknown => nil }
 
     def is_scalar
       [] == shape().to_a
