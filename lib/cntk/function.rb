@@ -72,7 +72,11 @@ module CNTK
     # we must add dynamic axes?
     def required_output_shape(ov)
       sz = ov.dynamic_axes.size
-      ov.shape().to_a + [1] * sz
+      if  ov.shape().rank == 0
+        []
+      else
+        ov.shape().to_a + [1] * sz
+      end
     end
 
     def required_output_buf(ov)

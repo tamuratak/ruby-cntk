@@ -41,6 +41,7 @@ class TestCNTK < Test::Unit::TestCase
     cross_entropy_with_softmax([1, 2, 3, 4], [0.35, 0.15, 0.05, 0.45]).eval.to_narray
   end
 
+  # FIXME
   def test_lambda_rank
     output = input_variable([1])
     gain   = input_variable([1])
@@ -62,7 +63,19 @@ class TestCNTK < Test::Unit::TestCase
     filter = SFloat[2,-1,-1,2].reshape(1,2,2)
     kernel = constant(filter)
     f = convolution(kernel: kernel, input: x, padding: [false])
-    f.eval({x => img}).to_narray
+    assert_equal(Numo::DFloat[[[6, 8, 10, 12], 
+                               [16, 18, 20, 22], 
+                               [26, 28, 30, 32], 
+                               [36, 38, 40, 42]]],
+                 f.eval({x => img}).to_narray )
+  end
+
+  # FIXME
+  def test_edit_distance_error
+    x = input_variable([2])
+    y = input_variable([2])
+    f = edit_distance_error(x, y, 0, 1, 1, true, [1])
+    p f.eval({ x =>  Numo::SFloat[[1, 3], [2, 0]], y => Numo::SFloat[[2, 0], [2, 0]] }).shape
   end
 
 end

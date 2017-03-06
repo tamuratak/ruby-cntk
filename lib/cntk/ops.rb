@@ -100,6 +100,7 @@ module Ops
                          transpose, max_temp_mem_size_in_samples, name)
   end
 
+  # FIXME
   def lambda_rank(output, gain, group, name="")
     output = OpsUtil::convert_to_variable( output )
     gain   = OpsUtil::convert_to_variable( gain   )
@@ -107,6 +108,7 @@ module Ops
     CNTK.__lambda_rank__(output, gain, group, name)
   end
 
+  # FIXME
   def ndcg_at_1(output, gain, group, name="")
     output = OpsUtil::convert_to_variable( output )
     gain   = OpsUtil::convert_to_variable( gain   )
@@ -131,6 +133,13 @@ module Ops
     CNTK.__transpose_axes__(x, axis1, axis2, name)
   end
 
+  # FIXME
+  def edit_distance_error(input_a, input_b, subPen=0, delPen=0, insPen=0,
+                          squashInputs=false, samplesToIgnore=[], name='')
+    input_a = OpsUtil::convert_to_variable( input_a )
+    input_b = OpsUtil::convert_to_variable( input_b )
+    CNTK.__edit_distance_error__(input_a, input_b, subPen, delPen, insPen, squashInputs, samplesToIgnore, name)
+  end
 
   (["__negate__", "__sigmoid__", "__tanh__", "__sin__", "__cos__", "__re_lu__",
    "__exp__", "__log__", "__square__", "__sqrt__", "__round__", "__floor__",
