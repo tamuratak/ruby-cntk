@@ -17,7 +17,16 @@ module Ops
       end
     end
 
-    def convert_to_variable(x, dtype=Numo::SFloat)
+    def convert_to_variable(*vars)
+      if vars.size == 1
+        convert_to_one_variable(vars[0])
+      else
+        dtype = highest_precision_type(*vars)
+        return vars.map{|v| convert_to_one_variable(v, dtype) }
+      end
+    end
+
+    def convert_to_one_variable(x, dtype = Numo::SFloat)
       case x
       when Variable
         x
@@ -127,8 +136,7 @@ module Ops
   #    x|
   #     |
   def roipooling(x, rois, shape, name="")
-    x    = OpsUtil::convert_to_variable( x )
-    rois = OpsUtil::convert_to_variable( rois )
+    x, rois = OpsUtil::convert_to_variable( x, rois )
     CNTK.__roipooling__(x, rois, shape, name)
   end
 
@@ -148,21 +156,16 @@ module Ops
 
   def unpooling(operand, input, type, shape, strides: [1], padding: [false],
                 lower_pad: [0], upper_pad: [0], name: "")
-    operand = OpsUtil::convert_to_variable( operand )
-    input   = OpsUtil::convert_to_variable( input   )
-    type    = OpsUtil::convert_to_pooling_type( type )
+    operand, input = OpsUtil::convert_to_variable( operand, input )
+    type           = OpsUtil::convert_to_pooling_type( type )
     CNTK.__unpooling__(operand, input, type, shape, strides, padding, lower_pad, upper_pad, name)
   end
 
   def batch_normalization(x, scale: nil, bias: nil, mean: nil, variance: nil, spatial: false,
                            normalization_time_constant: 5000, blend_time_constant: 0,
                            epsilon: 0.00001, use_cudnn_engine: false, name: "", running_count: 0)
-    x     = OpsUtil::convert_to_variable( x )
-    scale = OpsUtil::convert_to_variable( scale )
-    bias  = OpsUtil::convert_to_variable( bias )
-    mean  = OpsUtil::convert_to_variable( mean )
-    variance      = OpsUtil::convert_to_variable( variance )
-    running_count = OpsUtil::convert_to_variable( running_count )
+    x,  scale, bias, mean, variance, running_count =
+      OpsUtil::convert_to_variable( x, scale, bias, mean, variance, running_count )
     CNTK.__batch_normalization__(x, scale, bias, mean, variance, running_count, spatial,
                                  normalization_time_constant, blend_time_constant,
                                  epsilon, use_cudnn_engine, name)
@@ -170,23 +173,18 @@ module Ops
 
   # FIXME
   def lambda_rank(output, gain, group, name="")
-    output = OpsUtil::convert_to_variable( output )
-    gain   = OpsUtil::convert_to_variable( gain   )
-    group  = OpsUtil::convert_to_variable( group  )
+    output, gain, group = OpsUtil::convert_to_variable( output, gain, group )
     CNTK.__lambda_rank__(output, gain, group, name)
   end
 
   # FIXME
   def ndcg_at_1(output, gain, group, name="")
-    output = OpsUtil::convert_to_variable( output )
-    gain   = OpsUtil::convert_to_variable( gain   )
-    group  = OpsUtil::convert_to_variable( group  )
+    output, gain, group = OpsUtil::convert_to_variable( output, gain, group )
     CNTK.__ndcgat1__(output, gain, group, name)
   end
 
   def classification_error(output, target, axis=-1, topN=1, name="")
-    output = OpsUtil::convert_to_variable( output )
-    target = OpsUtil::convert_to_variable( target )
+    output, target = OpsUtil::convert_to_variable( output, target )
     axis   = Axis::from_num(axis)
     CNTK.__classification_error__(output, target, topN, axis, name)
   end
