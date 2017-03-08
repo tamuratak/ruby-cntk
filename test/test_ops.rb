@@ -52,7 +52,6 @@ class TestCNTK < Test::Unit::TestCase
   def test_classification_error
     x = input_variable([1])
     y = input_variable([1])
-#    p classification_error(Numo::SFloat[1], Numo::SFloat[1]).eval
     f = classification_error(x, y)
     f.eval({ x => Numo::SFloat[1], y => Numo::SFloat[0] }).to_narray
   end
@@ -70,12 +69,63 @@ class TestCNTK < Test::Unit::TestCase
                  f.eval({x => img}).to_narray )
   end
 
+  def test_roipooling
+    x = input_variable([3,3,1,1])
+    x_ = SFloat[[1,2,3],
+                [4,5,6],
+                [7,8,9]].reshape(3,3,1,1)
+    rois = input_variable([4,1,1])
+    rois_ = SFloat[1/3r, 1/3r, 2/3r, 2/3r].reshape(4,1,1)
+    assert_equal( SFloat[[5,6,6],
+                         [8,9,9],
+                         [8,9,9]],
+                  roipooling(x, rois, [3,3]).eval({x => x_, rois => rois_}).to_narray.reshape(3,3) )
+  end
+
+  def test_pooling
+    x_ = SFloat[*(0..15).to_a].reshape(4,4)
+    x  = input_variable(x_.shape)
+    assert_equal(SFloat[[ 5,  7],
+                        [13, 15]],
+                 pooling(x, :max, [2,2], strides: [2,2]).eval({x => x_}).to_narray)
+    assert_equal(SFloat[[ 2.5,  4.5],
+                        [10.5, 12.5]],
+                 pooling(x, :average, [2,2], strides: [2,2]).eval({x => x_}).to_narray)
+  end
+
+  def test_unpooling
+    x_ = SFloat[*(0..15).to_a].reshape(4,4)
+    x  = input_variable(x_.shape)
+    operand = pooling(x, :max, [2,2], strides: [2,2])
+    assert_equal(SFloat[[0, 0, 0, 0],
+                        [0, 5, 0, 7],
+                        [0, 0, 0, 0],
+                        [0, 13, 0, 15]],
+                 unpooling(operand, x, :max, [2,2], strides: [2,2]).eval({x => x_}).to_narray)
+  end
+
+  def test_batch_normalization
+    x_ = SFloat[[1, 1, 2, 3],
+                [0, 0, 0, 0],
+                [3, 3, 4, 4]]
+    x_ = x_.reshape(x_.size,1,1)
+    x  = input_variable(x_.shape)
+    mean     = 1
+    variance = 2
+    scale    = 3
+    bias     = 4
+    epsilon  = 0.00001
+    expected_x_ = (x_ - mean) / Math::sqrt(variance + epsilon) * scale + bias
+    assert_equal( expected_x_,
+                  batch_normalization(x, scale: 3, bias: 4, mean: 1, variance: 2).eval({x => x_}).to_narray )
+  end
+
   # FIXME
   def test_edit_distance_error
     x = input_variable([2])
     y = input_variable([2])
     f = edit_distance_error(x, y, 0, 1, 1, true, [1])
-    p f.eval({ x =>  Numo::SFloat[[1, 3], [2, 0]], y => Numo::SFloat[[2, 0], [2, 0]] }).shape
+    f.eval({ x =>  Numo::SFloat[[1, 3], [2, 0]], y => Numo::SFloat[[2, 0], [2, 0]] }).shape
   end
 
 end

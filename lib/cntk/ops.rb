@@ -5,11 +5,29 @@ module Ops
 
   module OpsUtil
   class << self
+
+    def convert_to_pooling_type(type)
+      case type
+      when :max
+        type = CNTK::PoolingType_Max
+      when :average
+        type = CNTK::PoolingType_Average
+      else
+        raise ArgumentError, "unknown pooling type"
+      end
+    end
+
     def convert_to_variable(x, dtype=Numo::SFloat)
       case x
       when Variable
         x
-      when Numo::NArray
+      when Function
+        if x.outputs.size == 1
+          x.output
+        else
+          raise ArgumentError, "the output size of Function expected to be 1"
+        end
+      when Numo::NArray, Numeric
         Ops.constant(x)
       when Array
         Ops.constant( dtype[*x] )
@@ -91,13 +109,63 @@ module Ops
     CNTK.__combine__(a, name)
   end
 
-  def convolution(kernel: nil, input: nil,  strides: [1], sharing: [true],
+  def convolution(kernel: nil, input: nil, strides: [1], sharing: [true],
                   padding: [false], lower_pad: [0], upper_pad: [0],
                   transpose: false, max_temp_mem_size_in_samples: 0, name: "")
-    kernel = OpsUtil::convert_to_variable(kernel)
-    input  = OpsUtil::convert_to_variable(input)
+    kernel = OpsUtil::convert_to_variable( kernel )
+    input  = OpsUtil::convert_to_variable( input  )
     CNTK.__convolution__(kernel, input, strides, sharing, padding, lower_pad, upper_pad,
                          transpose, max_temp_mem_size_in_samples, name)
+  end
+
+
+  # CNTK's NDArray is column-major.
+  # So to specify rois, remember it.
+  #          y
+  #     __________
+  #     |
+  #    x|
+  #     |
+  def roipooling(x, rois, shape, name="")
+    x    = OpsUtil::convert_to_variable( x )
+    rois = OpsUtil::convert_to_variable( rois )
+    CNTK.__roipooling__(x, rois, shape, name)
+  end
+
+  def pooling(x, type, shape, strides: [1], padding: [false],
+              lower_pad: [0], upper_pad: [0], name: "")
+    x = OpsUtil::convert_to_variable( x )
+    case type
+    when :max
+      type = CNTK::PoolingType_Max
+    when :average
+      type = CNTK::PoolingType_Average
+    else
+      raise ArgumentError, "unknown pooling type"
+    end
+    CNTK.__pooling__(x, type, shape, strides, padding, lower_pad, upper_pad, name)
+  end
+
+  def unpooling(operand, input, type, shape, strides: [1], padding: [false],
+                lower_pad: [0], upper_pad: [0], name: "")
+    operand = OpsUtil::convert_to_variable( operand )
+    input   = OpsUtil::convert_to_variable( input   )
+    type    = OpsUtil::convert_to_pooling_type( type )
+    CNTK.__unpooling__(operand, input, type, shape, strides, padding, lower_pad, upper_pad, name)
+  end
+
+  def batch_normalization(x, scale: nil, bias: nil, mean: nil, variance: nil, spatial: false,
+                           normalization_time_constant: 5000, blend_time_constant: 0,
+                           epsilon: 0.00001, use_cudnn_engine: false, name: "", running_count: 0)
+    x     = OpsUtil::convert_to_variable( x )
+    scale = OpsUtil::convert_to_variable( scale )
+    bias  = OpsUtil::convert_to_variable( bias )
+    mean  = OpsUtil::convert_to_variable( mean )
+    variance      = OpsUtil::convert_to_variable( variance )
+    running_count = OpsUtil::convert_to_variable( running_count )
+    CNTK.__batch_normalization__(x, scale, bias, mean, variance, running_count, spatial,
+                                 normalization_time_constant, blend_time_constant,
+                                 epsilon, use_cudnn_engine, name)
   end
 
   # FIXME

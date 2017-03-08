@@ -24,7 +24,15 @@ module CNTK
     end
 
     def to_narray
-      ret = Numo::DFloat[*to_vec()]
+      case get_data_type
+      when DataType_Float
+        klass = Numo::SFloat
+      when DataType_Double
+        klass = Numo::DFloat
+      else
+        raise "unknown data type"
+      end
+      ret = klass[*to_vec()]
       # NDArrayView is column-major and NArray is row-major.
       # So we must reverse shape and transpose it.
       ret = ret.reshape(*shape().reverse)
