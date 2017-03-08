@@ -120,6 +120,25 @@ class TestCNTK < Test::Unit::TestCase
                   batch_normalization(x, scale: 3, bias: 4, mean: 1, variance: 2).eval({x => x_}).to_narray )
   end
 
+
+  def test_log_add_exp
+    x_ = SFloat[0,1,2]
+    x  = input_variable(x_.shape)
+    y  = input_variable(x_.shape)
+    ret = log_add_exp(x, y).eval({x => NMath::log(1+x_), y => NMath.log(1+x_*x_)}).to_narray
+    assert_equal( SFloat[2,4,8], NMath::exp(ret) )
+  end
+
+  def test_times_2
+    x_ = SFloat[*(0..7).to_a].reshape(2,2,2)
+    x  = input_variable(x_.shape)
+    y  = input_variable(x_.shape)
+    assert_equal( x_.reshape(2,4).dot(x_.reshape(4,2)),
+                  times(x,y,1).eval({x => x_, y => x_}).to_narray )
+    assert_equal( ( x_.reshape(4,2).dot x_.reshape(2,4) ).reshape(2,2,2,2),
+                  times(x,y,2).eval({x => x_, y => x_}).to_narray )
+  end
+
   # FIXME
   def test_edit_distance_error
     x = input_variable([2])

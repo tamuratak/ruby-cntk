@@ -171,6 +171,11 @@ module Ops
                                  epsilon, use_cudnn_engine, name)
   end
 
+  def times(left, right, output_rank = 1, name="")
+    left, right = OpsUtil::convert_to_variable( left, right)
+    CNTK.__times__(left, right, output_rank, name)
+  end
+
   # FIXME
   def lambda_rank(output, gain, group, name="")
     output, gain, group = OpsUtil::convert_to_variable( output, gain, group )
@@ -224,8 +229,7 @@ module Ops
    ["__cosine_distance__", "__binary_cross_entropy__", "__squared_error__"]).each{|orig_name|
     mth_name = orig_name.gsub(/__/, "")
     define_method(mth_name) do |*args|
-      x    = OpsUtil::convert_to_variable( args[0] )
-      y    = OpsUtil::convert_to_variable( args[1] )
+      x, y  = OpsUtil::convert_to_variable( args[0], args[1] )
       name = args[2] || ""
       CNTK.send(orig_name, x, y, name)
     end
