@@ -108,6 +108,8 @@
 
   class Value {
   public:
+    static ValuePtr Create(const NDShape& sampleShape, const std::vector<NDArrayViewPtr>& sequences, const std::vector<bool>& sequenceStartFlags, const DeviceDescriptor& device, bool readOnly = false);
+
     Value(const NDArrayViewPtr& data);
     Value(const NDArrayViewPtr& data, const NDMaskPtr& mask);
     
@@ -126,5 +128,4 @@
     ValuePtr Alias(bool readOnly = false);
     void CopyFrom(const Value& source);
     void CopyVariableValueTo(const Variable& outputVariable, std::vector<std::vector<size_t>>& sequences);
-
   };

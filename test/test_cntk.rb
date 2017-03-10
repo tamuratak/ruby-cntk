@@ -7,59 +7,21 @@ class TestCNTK < Test::Unit::TestCase
   include CNTK
   include CNTK::Ops
 
-  def test_f
-    v = NDArrayView.new(DataType_Float, [2], [1.9, 1.2], DeviceDescriptor.default_device(), true)
-    v = Value.new(v)
-    x = input_variable([2])
-    f = CNTK.__sin__(x)
-    out = StdUMapVariableValue.new()
-    vo = NDArrayView.new(DataType_Float, [2,1,1], [1.0,1.0], DeviceDescriptor.default_device(), true)
-    f.output.shape
-    f.output.shape.rank
-    valout = Value.new(vo)
-    out[f.output] = valout
-    f.forward({x => v}, out)
-    f.forward({x => v})
-    NDArrayView.new(1.9)
-  end
-
   def test_ndshape
     NDShape.new([1,1,1]).to_ary
     assert_equal([1,2,3], NDShape.new([1,2,3]).to_ary)
-  end
-
-  def test_times
-    v0 = NDArrayView.new(DataType_Float, [2], [1.0,0.0], DeviceDescriptor.default_device(), true)
-    v = input_variable([2])
-    m0 = NDArrayView.new(DataType_Float, [3,2], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
-    m = input_variable([3,2])
-    f = CNTK.__times__(m,v)
-    r = f.forward({v => Value.new(v0), m => Value.new(m0)})
-    assert_equal([1.0,2.0,3.0], r[1].values[0].data.to_vec)
-
-    r = f.forward( { v => Numo::SFloat[1,0], 
-                     m => Numo::SFloat[[1,2],[3,4],[5,6]] })
-    assert_equal([1.0,3.0,5.0], r[1].values[0].data.to_vec)
-
-    m = input_variable([3,1])
-    v = input_variable([1,2])
-    f = CNTK.__times__(m,v)
-    r = f.forward( { v => Numo::SFloat[1,2].reshape(1,2),
-                     m => Numo::SFloat[1,3,4].reshape(3,1) } )
-    assert_equal(Numo::SFloat[[1,2],[3,6],[4,8]],
-                 r[1].values[0].to_narray )
   end
 
   def test_times_edge_cases
     v = input_variable([3])
     m = input_variable([3])
     f = CNTK.__times__(v,m)
-    r = f.forward( { v => Numo::SFloat[1,0,0].reshape(3),
+    r = f.eval( { v => Numo::SFloat[1,0,0].reshape(3),
                      m => Numo::SFloat[1,2,3].reshape(3) } )
-    assert_equal(Numo::SFloat[[1, 2, 3], 
-                              [0, 0, 0], 
-                              [0, 0, 0]],
-                 r[1].values[0].to_narray )
+    assert_equal(Numo::SFloat[[1, 0, 0], 
+                              [2, 0, 0], 
+                              [3, 0, 0]],
+                 r.to_narray )
   end
 
   def test_parameter
@@ -80,16 +42,16 @@ class TestCNTK < Test::Unit::TestCase
     x = placeholder_variable()
     f2 = sin(x)
     f3 = f2.(f1)
-    r = f3.forward({v => Value.new(v0)})
+    r = f3.eval({v => Value.new(v0)})
     assert_equal([Math::sin(Math::sin(1.9))],
-                 r[1].values[0].data.to_vec)
+                 r.data.to_vec)
   end
 
   def test_function_forward
     v = input_variable([1])
     f = CNTK.__sin__(v)
-    r = f.forward({ v => Numo::SFloat[Math::PI/2] })
-    assert_equal([1.0], r[1].values[0].data.to_vec )
+    r = f.eval({ v => Numo::SFloat[Math::PI/2] })
+    assert_equal([1.0], r.data.to_vec )
   end
 
   def test_func_shift_op
@@ -99,23 +61,27 @@ class TestCNTK < Test::Unit::TestCase
     x = placeholder_variable()
     f2 = sin(x)
     f3 = f1 >> f2
-    r = f3.forward({v => Value.new(v0)})
+    r = f3.eval({v => Value.new(v0)})
     assert_equal([Math::sin(Math::sin(1.9))],
-                 r[1].values[0].data.to_vec)
+                 r.data.to_vec)
   end
 
   def test_narray
     v = NDArrayView.new(DataType_Float, [3,2], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
-    assert_equal([[1.0, 4.0], 
-                  [2.0, 5.0], 
-                  [3.0, 6.0]], 
+    assert_equal([2,3],
+                 v.to_narray.shape)
+    assert_equal([[1, 2, 3],
+                  [4, 5, 6]],
                  v.to_narray.to_a)
 
     v = NDArrayView.new(DataType_Float, [2,2,3], (1..12).to_a, DeviceDescriptor.default_device(), true)
-    assert_equal([ [[1.0, 5.0, 9.0],  
-                    [3.0, 7.0, 11.0]], 
-                   [[2.0, 6.0, 10.0], 
-                    [4.0, 8.0, 12.0]] ],
+    assert_equal([2,2,3],
+                 v.shape)
+    assert_equal([3,2,2],
+                 v.to_narray.shape)
+    assert_equal([[[1.0, 2.0], [3.0, 4.0]],
+                  [[5.0, 6.0], [7.0, 8.0]],
+                  [[9.0, 10.0], [11.0, 12.0]]],
                  v.to_narray.to_a)
 
     m = Numo::SFloat[1,2,3,4,5,6].reshape(2,3)

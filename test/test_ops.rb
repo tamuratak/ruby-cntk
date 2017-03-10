@@ -10,7 +10,7 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_highest_precision_type
     assert_equal( Numo::DFloat,
-                  OpsUtil::highest_precision_type( Numo::SFloat[1], 
+                  Ops::highest_precision_type( Numo::SFloat[1], 
                                                    Numo::DFloat[1],
                                                    constant(Numo::DFloat[1]) ) )
   end
@@ -29,7 +29,8 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_constant_2
-    assert_equal( [2,3], constant( [[1,2,3], [4,5,6]] ).shape )
+    assert_equal( [3,2], 
+                  constant( [[1,2,3], [4,5,6]] ).shape )
   end
 
   def test_transpose
@@ -66,16 +67,16 @@ class TestCNTK < Test::Unit::TestCase
                                [16, 18, 20, 22], 
                                [26, 28, 30, 32], 
                                [36, 38, 40, 42]]],
-                 f.eval({x => img}).to_narray )
+                 f.eval({x => img}).to_narray.reshape(1,4,4) )
   end
 
   def test_roipooling
-    x = input_variable([3,3,1,1])
+    x = input_variable([1,1,3,3])
     x_ = SFloat[[1,2,3],
                 [4,5,6],
-                [7,8,9]].reshape(3,3,1,1)
-    rois = input_variable([4,1,1])
-    rois_ = SFloat[1/3r, 1/3r, 2/3r, 2/3r].reshape(4,1,1)
+                [7,8,9]].reshape(1,1,3,3)
+    rois = input_variable([1,1,4])
+    rois_ = SFloat[[1/3r, 1/3r, 2/3r, 2/3r]].reshape(1,1,4)
     assert_equal( SFloat[[5,6,6],
                          [8,9,9],
                          [8,9,9]],
@@ -109,7 +110,7 @@ class TestCNTK < Test::Unit::TestCase
                 [0, 0, 0, 0],
                 [3, 3, 4, 4]]
     x_ = x_.reshape(x_.size,1,1)
-    x  = input_variable(x_.shape)
+    x  = input_variable([1])
     mean     = 1
     variance = 2
     scale    = 3
@@ -137,6 +138,34 @@ class TestCNTK < Test::Unit::TestCase
                   times(x,y,1).eval({x => x_, y => x_}).to_narray )
     assert_equal( ( x_.reshape(4,2).dot x_.reshape(2,4) ).reshape(2,2,2,2),
                   times(x,y,2).eval({x => x_, y => x_}).to_narray )
+  end
+
+  # FIXME
+  def test_transpose_times
+    x_ = SFloat[[1,2],[3,4]]
+    y_ = SFloat[2,-1].reshape(2,1)
+#    p x_.dot y_
+    times(x_,y_).eval.to_narray
+#     transpose_times(x_, y_).eval.to_narray
+#     transpose_times(x_,x_).eval.to_narray
+  end
+
+  def test_clip
+    assert_equal( SFloat[2,2.1,3,4],
+                  clip([1, 2.1, 3.0, 4.1], 2, 4).eval.to_narray )
+  end
+
+  def test_element_select
+    assert_equal( SFloat[1, 10, 200, 1000, 10000],
+                  element_select([-10, -1, 0, 0.3, 100],
+                                 [1, 10, 100, 1000, 10000],
+                                 [ 2, 20, 200, 2000, 20000]).eval().to_narray )
+  end
+
+  def test_future_value
+    x_ = SFloat[*(0..23).to_a].reshape(1,4,3,2) #.transpose
+    x  = input_variable([3,2])
+    future_value(x).eval({x => x_}).to_narray #.transpose.reshape(1,4,3,2)
   end
 
   # FIXME

@@ -103,7 +103,8 @@ namespace CNTK {
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
-%rename(__forward__) CNTK::Function::Forward;
+%rename(__forward__)              CNTK::Function::Forward;
+// %rename(__times_transpose__)          CNTK::TransposeTimes;
 %rename(l1_regularization_weight) CNTK::AdditionalLearningOptions::l1RegularizationWeight;
 %rename(l2_regularization_weight) CNTK::AdditionalLearningOptions::l2RegularizationWeight;
 
@@ -138,6 +139,12 @@ namespace CNTK {
     catch (const std::logic_error &e) { SWIG_exception(SWIG_RuntimeError,e.what()); }
     catch (...) { SWIG_exception(SWIG_UnknownError,"Runtime exception"); }
 }
+
+%extend std::unordered_map< CNTK::Variable, CNTK::ValuePtr > {
+  int __set_nullptr__(const CNTK::Variable &key) {
+    (*$self)[key] = CNTK::ValuePtr(nullptr);
+  }
+};
 
 //
 // In the future, we would just swtich to %include "CNTKLibrary.h". 

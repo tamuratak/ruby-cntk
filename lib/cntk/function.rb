@@ -32,14 +32,7 @@ module CNTK
       elsif args.length == 1
         input = convert_to_value(args[0])
         out = StdUMapVariableValue.new()
-        outputs().each{|o|
-          v = NDArrayView.new(o.get_data_type(),
-                              required_output_shape(o),
-                              required_output_buf(o),
-                              CNTK::DeviceDescriptor.default_device(),
-                              true)
-          out[o] = Value.new(v)
-        }
+        outputs().each{|o| out.__set_nullptr__(o)}
         b = __forward__(input, out)
         out = remove_dynamic_axes(out)
         return [b, out]
@@ -95,6 +88,6 @@ module CNTK
       return out1
     end
 
-    private :__forward__
+    :__forward__
   end
 end
