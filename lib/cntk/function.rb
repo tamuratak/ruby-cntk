@@ -32,8 +32,12 @@ module CNTK
       elsif args.length == 1
         input = convert_to_value(args[0])
         out = StdUMapVariableValue.new()
-        outputs().each{|o| out.__set_nullptr__(o)}
+        outputs().each{|out_var| 
+          # By setting nullptr, Forward function implemented in C++ will allocate Value object with required storage.
+          out.__set_nullptr__(out_var)
+        }
         b = __forward__(input, out)
+        # FIXME. we will remove this line.
         out = remove_dynamic_axes(out)
         return [b, out]
       end
@@ -61,17 +65,6 @@ module CNTK
       return input
     end
 
-    #FIXME
-    # we must add dynamic axes?
-    def required_output_shape(ov)
-      sz = ov.dynamic_axes.size
-      if  ov.shape().rank == 0
-        []
-      else
-        ov.shape().to_a + [1] * sz
-      end
-    end
-
     def required_output_buf(ov)
       [1.0] * ov.shape.total_size
     end
@@ -79,8 +72,8 @@ module CNTK
     def remove_dynamic_axes(out)
       out1 = {}
       out.each{|o,ov|
-        if ov.shape.rank == o.shape.rank + 2 and ov.shape.to_a[-2..-1] == [1,1]
-          out1[o] = ov.reshape( ov.shape.to_a[0..-3] )
+        if ov.shape.rank == o.shape.rank + 2 and ov.shape.to_a[0..1] == [1,1]
+          out1[o] = ov.reshape( ov.shape.to_a[2..-1] )
         else
           out1[o] = ov
         end
@@ -88,6 +81,6 @@ module CNTK
       return out1
     end
 
-    :__forward__
+    private :__forward__
   end
 end

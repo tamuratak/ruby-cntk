@@ -119,15 +119,18 @@ namespace CNTK {
   if(NIL_P(arry)) {
     rb_raise(rb_eArgError, "Array expected"); SWIG_fail;
   }else{
-    std::vector<size_t> dimensions(RARRAY_LEN(arry));
-    for (int i=0; i<RARRAY_LEN(arry); i++) {
+    size_t rank = RARRAY_LEN(arry);
+    std::vector<size_t> dimensions(rank);
+    for (int i=0; i < rank; i++) {
 	VALUE elt = RARRAY_AREF(arry, i);
-        dimensions[i] = NUM2SIZET(elt);
+        dimensions[rank-i-1] = NUM2SIZET(elt);
     }
     tmp = CNTK::NDShape(dimensions);
     $1 = &tmp;
   }
 }
+
+%ignore CNTK::NDShape::operator[];
 
 //
 // Exception handling

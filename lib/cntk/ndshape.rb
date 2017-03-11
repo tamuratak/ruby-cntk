@@ -1,10 +1,15 @@
 module CNTK
   class NDShape
-    alias :to_ary :dimensions
-    alias :to_a   :dimensions
-    
+    def to_ary
+      dimensions.reverse
+    end
+
+    def to_a
+      to_ary
+    end
+
     def reverse
-      to_ary.reverse
+      dimensions
     end
   end
 end

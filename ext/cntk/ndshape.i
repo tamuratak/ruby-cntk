@@ -22,18 +22,9 @@
     static const NDShape Unknown;
 
     %extend {
-      size_t __getitem__(size_t axis) {
-        return (*$self)[axis];
-      }
-
-      void __setitem__(size_t axis, size_t n) {
-        (*$self)[axis] = n;
-      }
-
       bool __eq__(const NDShape& other) {
         return (*$self) == other;
       }
-
     }
   };
 

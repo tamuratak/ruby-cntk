@@ -29,8 +29,8 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_constant_2
-    assert_equal( [3,2], 
-                  constant( [[1,2,3], [4,5,6]] ).shape )
+    assert_equal( [2,3], 
+                  constant( [[1,2,3], [4,5,6]] ).shape.to_a )
   end
 
   def test_transpose

@@ -9,7 +9,7 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_ndshape
     NDShape.new([1,1,1]).to_ary
-    assert_equal([1,2,3], NDShape.new([1,2,3]).to_ary)
+    assert_equal([3,2,1], NDShape.new([1,2,3]).to_ary)
   end
 
   def test_times_edge_cases
@@ -17,11 +17,11 @@ class TestCNTK < Test::Unit::TestCase
     m = input_variable([3])
     f = CNTK.__times__(v,m)
     r = f.eval( { v => Numo::SFloat[1,0,0].reshape(3),
-                     m => Numo::SFloat[1,2,3].reshape(3) } )
+                  m => Numo::SFloat[1,2,3].reshape(3) } )
     assert_equal(Numo::SFloat[[1, 0, 0], 
                               [2, 0, 0], 
                               [3, 0, 0]],
-                 r.to_narray )
+                 r.to_narray.reshape(3,3) )
   end
 
   def test_parameter
@@ -67,18 +67,18 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_narray
-    v = NDArrayView.new(DataType_Float, [3,2], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
+    v = NDArrayView.new(DataType_Float, [2,3], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
     assert_equal([2,3],
-                 v.to_narray.shape)
+                 v.to_narray.shape.to_a)
     assert_equal([[1, 2, 3],
                   [4, 5, 6]],
                  v.to_narray.to_a)
 
-    v = NDArrayView.new(DataType_Float, [2,2,3], (1..12).to_a, DeviceDescriptor.default_device(), true)
-    assert_equal([2,2,3],
-                 v.shape)
+    v = NDArrayView.new(DataType_Float, [3,2,2], (1..12).to_a, DeviceDescriptor.default_device(), true)
     assert_equal([3,2,2],
-                 v.to_narray.shape)
+                 v.shape.to_a)
+    assert_equal([3,2,2],
+                 v.to_narray.shape.to_a)
     assert_equal([[[1.0, 2.0], [3.0, 4.0]],
                   [[5.0, 6.0], [7.0, 8.0]],
                   [[9.0, 10.0], [11.0, 12.0]]],

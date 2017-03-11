@@ -16,7 +16,7 @@ module CNTK
         else
           raise "not implemented"
         end
-        return self.new(dtype, a.shape.to_a.reverse, ta.flatten.to_a,
+        return self.new(dtype, a.shape.to_a, ta.flatten.to_a,
                         CNTK::DeviceDescriptor.default_device(), false)
       else
         raise "not implemented"
@@ -35,7 +35,7 @@ module CNTK
       ret = klass[*to_vec()]
       # NDArrayView is column-major and NArray is row-major.
       # So we must reverse shape and transpose it.
-      ret = ret.reshape(*shape().reverse)
+      ret = ret.reshape(*shape().to_a)
       return ret #.transpose
     end
 
