@@ -5,6 +5,20 @@ module Ops
 
   class << self
 
+    def reverse_axis(axis)
+      axis = Axis.new(axis) if axis.is_a?(Numeric)
+      case
+      when axis.is_static_axis
+        axis 
+      when axis == Axis.end_static_axis
+        Axis.new(0)
+      when axis == Axis.new(0)
+        Axis.end_static_axis
+      else
+        Axis(-axis.static_axis_index)
+      end
+    end
+
     def convert_to_pooling_type(type)
       case type
       when :max
@@ -93,34 +107,34 @@ module Ops
   end
 
   def alias(x, name="")
-    x = Ops::convert_to_variable( x )
+    x = Ops.convert_to_variable( x )
     CNTK.__alias__(x, name)
   end
 
   def weighted_binary_cross_entropy(output, target, weight, name="")
-    output = Ops::convert_to_variable( output )
-    target = Ops::convert_to_variable( target )
-    weight = Ops::convert_to_variable( weight )
+    output = Ops.convert_to_variable( output )
+    target = Ops.convert_to_variable( target )
+    weight = Ops.convert_to_variable( weight )
     CNTK.__weighted_binary_cross_entropy__(output, target, weight, name)
   end
 
   def cross_entropy_with_softmax(output, target, axis=0, name="")
-    output = Ops::convert_to_variable( output )
-    target = Ops::convert_to_variable( target )
+    output = Ops.convert_to_variable( output )
+    target = Ops.convert_to_variable( target )
     axis = Axis.from_num(axis)
     CNTK.__cross_entropy_with_softmax__(output, target, axis, name)
   end
 
   def combine(array, name="")
-    a = array.map{|x| Ops::convert_to_variable( x ) }
+    a = array.map{|x| Ops.convert_to_variable( x ) }
     CNTK.__combine__(a, name)
   end
 
   def convolution(kernel: nil, input: nil, strides: [1], sharing: [true],
                   padding: [false], lower_pad: [0], upper_pad: [0],
                   transpose: false, max_temp_mem_size_in_samples: 0, name: "")
-    kernel = Ops::convert_to_variable( kernel )
-    input  = Ops::convert_to_variable( input  )
+    kernel = Ops.convert_to_variable( kernel )
+    input  = Ops.convert_to_variable( input  )
     CNTK.__convolution__(kernel, input, strides, sharing, padding, lower_pad, upper_pad,
                          transpose, max_temp_mem_size_in_samples, name)
   end
@@ -134,13 +148,13 @@ module Ops
   #    x|
   #     |
   def roipooling(x, rois, shape, name="")
-    x, rois = Ops::convert_to_variable( x, rois )
+    x, rois = Ops.convert_to_variable( x, rois )
     CNTK.__roipooling__(x, rois, shape, name)
   end
 
   def pooling(x, type, shape, strides: [1], padding: [false],
               lower_pad: [0], upper_pad: [0], name: "")
-    x = Ops::convert_to_variable( x )
+    x = Ops.convert_to_variable( x )
     case type
     when :max
       type = CNTK::PoolingType_Max
@@ -154,8 +168,8 @@ module Ops
 
   def unpooling(operand, input, type, shape, strides: [1], padding: [false],
                 lower_pad: [0], upper_pad: [0], name: "")
-    operand, input = Ops::convert_to_variable( operand, input )
-    type           = Ops::convert_to_pooling_type( type )
+    operand, input = Ops.convert_to_variable( operand, input )
+    type           = Ops.convert_to_pooling_type( type )
     CNTK.__unpooling__(operand, input, type, shape, strides, padding, lower_pad, upper_pad, name)
   end
 
@@ -163,76 +177,94 @@ module Ops
                            normalization_time_constant: 5000, blend_time_constant: 0,
                            epsilon: 0.00001, use_cudnn_engine: false, name: "", running_count: 0)
     x,  scale, bias, mean, variance, running_count =
-      Ops::convert_to_variable( x, scale, bias, mean, variance, running_count )
+      Ops.convert_to_variable( x, scale, bias, mean, variance, running_count )
     CNTK.__batch_normalization__(x, scale, bias, mean, variance, running_count, spatial,
                                  normalization_time_constant, blend_time_constant,
                                  epsilon, use_cudnn_engine, name)
   end
 
   def times(left, right, output_rank = 1, name="")
-    left, right = Ops::convert_to_variable( left, right )
+    left, right = Ops.convert_to_variable( left, right )
     # change the order because CNTK a column-major.
     CNTK.__times__(right, left, output_rank, name)
   end
 
   def times_transpose(left, right, output_rank = 1, name="")
-    left, right = Ops::convert_to_variable( left, right )
+    left, right = Ops.convert_to_variable( left, right )
     CNTK.__transpose_times__(right, left, output_rank, name="")
   end
 
   def clip(x, min, max, name="")
-    x, min, max = Ops::convert_to_variable( x, min, max )
+    x, min, max = Ops.convert_to_variable( x, min, max )
     CNTK.__clip__(x, min, max, name)
   end
 
   def element_select(x, if_true, if_else, name="")
-    x, if_true, if_else = Ops::convert_to_variable( x, if_true, if_else )
+    x, if_true, if_else = Ops.convert_to_variable( x, if_true, if_else )
     CNTK.__element_select__(x, if_true, if_else, name)
   end
 
   def future_value(x, init=0, time_step=1, name="")
-    x, init = Ops::convert_to_variable( x, init )
+    x, init = Ops.convert_to_variable( x, init )
     CNTK.__future_value__(x, init, time_step, name)
   end
 
   def past_value(x, init=0, time_step=1, name="")
-    x, init = Ops::convert_to_variable( x, init )
+    x, init = Ops.convert_to_variable( x, init )
     CNTK.__past_value__(x, init, time_step, name)
+  end
+
+  def reshape(x, shape, begin_axis=Axis.new(0), end_axis=Axis.end_static_axis(), name="")
+    begin_axis = Ops.reverse_axis(begin_axis)
+    end_axis   = Ops.reverse_axis(end_axis  )
+    CNTK.__reshape__(x, shape, begin_axis, end_axis, name)
+  end
+
+  def transpose(x, axis1=0, axis2=1, name="")
+    x = Ops.convert_to_variable( x )
+    unless axis1.abs <= x.shape.rank and axis2.abs <= x.shape.rank
+      raise ArgumentError, "out of bounds"
+    end
+    axis1 = Axis.from_num(axis1)
+    axis2 = Axis.from_num(axis2)
+    CNTK.__transpose_axes__(x, axis1, axis2, name)
+  end
+
+  def slice(x, axis, begin_index, end_index, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__slice__(x, axis, begin_index, end_index, name)
+  end
+
+  def splice(x, axis=-1, name="")
+    x = x.map{|var| Ops.convert_to_variable( var ) }
+    axis = Axis.from_num(axis)
+    CNTK.__splice__(x, axis, name)
   end
 
   # FIXME
   def lambda_rank(output, gain, group, name="")
-    output, gain, group = Ops::convert_to_variable( output, gain, group )
+    output, gain, group = Ops.convert_to_variable( output, gain, group )
     CNTK.__lambda_rank__(output, gain, group, name)
   end
 
   # FIXME
   def ndcg_at_1(output, gain, group, name="")
-    output, gain, group = Ops::convert_to_variable( output, gain, group )
+    output, gain, group = Ops.convert_to_variable( output, gain, group )
     CNTK.__ndcgat1__(output, gain, group, name)
   end
 
   def classification_error(output, target, axis=-1, topN=1, name="")
-    output, target = Ops::convert_to_variable( output, target )
+    output, target = Ops.convert_to_variable( output, target )
     axis   = Axis::from_num(axis)
     CNTK.__classification_error__(output, target, topN, axis, name)
-  end
-
-  def transpose(x, axis1=0, axis2=1, name="")
-    x = Ops::convert_to_variable( x )
-    unless axis1.abs <= x.shape.rank and axis2.abs <= x.shape.rank
-      raise ArgumentError, "out of bounds"
-    end
-    axis1 = Axis::from_num(axis1)
-    axis2 = Axis::from_num(axis2)
-    CNTK.__transpose_axes__(x, axis1, axis2, name)
   end
 
   # FIXME
   def edit_distance_error(input_a, input_b, subPen=0, delPen=0, insPen=0,
                           squashInputs=false, samplesToIgnore=[], name='')
-    input_a = Ops::convert_to_variable( input_a )
-    input_b = Ops::convert_to_variable( input_b )
+    input_a = Ops.convert_to_variable( input_a )
+    input_b = Ops.convert_to_variable( input_b )
     CNTK.__edit_distance_error__(input_a, input_b, subPen, delPen, insPen, squashInputs, samplesToIgnore, name)
   end
 
@@ -241,7 +273,7 @@ module Ops
    "__ceil__", "__reciprocal__", "__softmax__", "__hardmax__"] ).each{|orig_name|
     mth_name = orig_name.gsub(/_/, "")
     define_method(mth_name) do |*args|
-      x    = Ops::convert_to_variable( args[0] )
+      x    = Ops.convert_to_variable( args[0] )
       name = args[1] || ""
       CNTK.send(orig_name, x, name)
     end
@@ -253,7 +285,7 @@ module Ops
    ["__cosine_distance__", "__binary_cross_entropy__", "__squared_error__"]).each{|orig_name|
     mth_name = orig_name.gsub(/__/, "")
     define_method(mth_name) do |*args|
-      x, y  = Ops::convert_to_variable( args[0], args[1] )
+      x, y  = Ops.convert_to_variable( args[0], args[1] )
       name = args[2] || ""
       CNTK.send(orig_name, x, y, name)
     end

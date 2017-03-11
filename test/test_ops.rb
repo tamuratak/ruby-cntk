@@ -34,8 +34,10 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_transpose
-    assert_equal( Numo::DFloat[*[[0,1],[2,3],[4,5]] ].transpose(1,0),
-                  transpose([[0,1],[2,3],[4,5]], 0, 1).eval.to_narray)
+    x_ = SFloat[[0,1], [2,3], [4,5]]
+    x  = input_variable(x_.shape)
+    assert_equal( x_.transpose,
+                  transpose(x).eval({x=>x_}).to_narray)
   end
 
   def test_cross_entropy
@@ -194,6 +196,31 @@ class TestCNTK < Test::Unit::TestCase
                           [14, 15],
                           [16, 17]]]],
                  past_value(x).eval({x => x_}).to_narray)
+  end
+
+  def test_reshape
+    x_ = SFloat[[0,1],[2,3],[4,5]]
+    x  = input_variable([3,2])
+    assert_equal(x_.reshape(2,3),
+                 reshape(x, [2,3]).eval({x => x_}).to_narray)
+  end
+
+  def test_slice
+    x_ = SFloat[[1,2,3],[4,5,6]]
+    x  = input_variable(x_.shape)
+    assert_equal(SFloat[[4,5,6]],
+                 slice(x, 0, 1, 2).eval({x => x_}).to_narray)
+    assert_equal(SFloat[[1],[4]],
+                 slice(x, 1, 0, 1).eval({x => x_}).to_narray)
+  end
+
+  def test_splice
+    x_ = SFloat[[1,2],
+                [4,5]]
+    y_ = SFloat[[10,20],
+                [30,40],
+                [50,60]]
+    splice([x_, y_], -2).eval.to_narray
   end
 
   # FIXME
