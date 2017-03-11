@@ -215,12 +215,45 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_splice
-    x_ = SFloat[[1,2],
-                [4,5]]
-    y_ = SFloat[[10,20],
-                [30,40],
-                [50,60]]
-    splice([x_, y_], -2).eval.to_narray
+    x_ = SFloat[[[1,2],
+                 [4,5]]]
+    y_ = SFloat[[[10,20],
+                 [30,40],
+                 [50,60]]]
+    assert_equal( SFloat[[[1, 2],
+                          [4, 5],
+                          [10, 20],
+                          [30, 40],
+                          [50, 60]]],
+                  splice([x_, y_], 1).eval.to_narray)
+  end
+
+  def test_reduce_sum
+    x_ = SFloat[*(0..15).to_a].reshape(2,2,2,2)
+    x  = input_variable([2,2])
+    reduce_sum(x).eval({x => x_}).to_narray
+  end
+
+  def test_reduce_log_sum_exp
+    x_ = SFloat[*(0..5).to_a].reshape(1,3,2)
+    x  = input_variable([3,2])
+    assert_equal( SFloat[[5.4561934]],
+                  reduce_log_sum_exp(x).eval({x => x_}).to_narray )
+  end
+
+  def test_reduce_mean
+    x_ = SFloat[[5, 20],[30, 40],[55, 60]]
+    x  = input_variable(x_.shape)
+    assert_equal(SFloat[[30,40]],
+                 reduce_mean(x,0).eval({x => x_}).to_narray)
+    assert_equal(SFloat[[12.5],
+                        [35.0],
+                        [57.5]],
+                 reduce_mean(x,1).eval({x => x_}).to_narray)
+  end
+
+  def test_random_sample
+    p random_sample(SFloat[0.1,0.1,0.1,0.7], 10, true).eval({})
   end
 
   # FIXME

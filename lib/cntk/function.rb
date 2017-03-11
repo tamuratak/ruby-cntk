@@ -69,7 +69,7 @@ module CNTK
       out1 = {}
       out.each{|o,ov|
         sz = o.dynamic_axes.size
-        if sz > 0 and ov.shape.to_a[0..1] == [1,1]
+        if sz > 0 and sz < ov.shape.rank and ov.shape.to_a[0..1] == [1,1]
           out1[o] = ov.reshape( ov.shape.to_a[sz..-1] )
         else
           out1[o] = ov

@@ -5,7 +5,7 @@ module Ops
 
   class << self
 
-    def reverse_axis(axis)
+    def reverse_reshape_axis(axis)
       axis = Axis.new(axis) if axis.is_a?(Numeric)
       case
       when axis.is_static_axis
@@ -215,8 +215,8 @@ module Ops
   end
 
   def reshape(x, shape, begin_axis=Axis.new(0), end_axis=Axis.end_static_axis(), name="")
-    begin_axis = Ops.reverse_axis(begin_axis)
-    end_axis   = Ops.reverse_axis(end_axis  )
+    begin_axis = Ops.reverse_reshape_axis(begin_axis)
+    end_axis   = Ops.reverse_reshape_axis(end_axis  )
     CNTK.__reshape__(x, shape, begin_axis, end_axis, name)
   end
 
@@ -240,6 +240,52 @@ module Ops
     x = x.map{|var| Ops.convert_to_variable( var ) }
     axis = Axis.from_num(axis)
     CNTK.__splice__(x, axis, name)
+  end
+
+  def reduce_sum(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_sum__(x, axis, name)
+  end
+
+  def reduce_log_sum_exp(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_log_sum__(x, axis, name)
+  end
+
+  def reduce_mean(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_mean__(x, axis, name)
+  end
+
+  def reduce_max(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_max__(x, axis, name)
+  end
+
+  def reduce_min(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_min__(x, axis, name)
+  end
+
+  def reduce_prod(x, axis=nil, name="")
+    x = Ops.convert_to_variable( x )
+    axis = Axis.from_num(axis)
+    CNTK.__reduce_prod__(x, axis, name)
+  end
+
+  def random_sample(weights, num_samples, allow_dup, name="")
+    weights = Ops.convert_to_variable( weights )
+    CNTK.__random_sample__(weights, num_samples, allow_dup, name)
+  end
+
+  def random_sample_inclusion_frequency(weights, num_samples, allow_dup, name="")
+    weights = Ops.convert_to_variable( weights )
+    CNTK.__random_sample_inclusion_frequency__(weights, num_samples, allow_dup, name)
   end
 
   # FIXME
