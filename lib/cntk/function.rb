@@ -65,15 +65,12 @@ module CNTK
       return input
     end
 
-    def required_output_buf(ov)
-      [1.0] * ov.shape.total_size
-    end
-
     def remove_dynamic_axes(out)
       out1 = {}
       out.each{|o,ov|
-        if ov.shape.rank == o.shape.rank + 2 and ov.shape.to_a[0..1] == [1,1]
-          out1[o] = ov.reshape( ov.shape.to_a[2..-1] )
+        sz = o.dynamic_axes.size
+        if sz > 0 and ov.shape.to_a[0..1] == [1,1]
+          out1[o] = ov.reshape( ov.shape.to_a[sz..-1] )
         else
           out1[o] = ov
         end

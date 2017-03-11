@@ -140,14 +140,12 @@ class TestCNTK < Test::Unit::TestCase
                   times(x,y,2).eval({x => x_, y => x_}).to_narray )
   end
 
-  # FIXME
+  # FIXME when right val is vector.
   def test_transpose_times
-    x_ = SFloat[[1,2],[3,4]]
-    y_ = SFloat[2,-1].reshape(2,1)
-#    p x_.dot y_
-    times(x_,y_).eval.to_narray
-#     transpose_times(x_, y_).eval.to_narray
-#     transpose_times(x_,x_).eval.to_narray
+    x_ = SFloat[[1,2],
+                [3,4]]
+    assert_equal(x_.dot(x_.transpose),
+                 times_transpose(x_, x_).eval.to_narray)
   end
 
   def test_clip
@@ -163,17 +161,47 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_future_value
-    x_ = SFloat[*(0..23).to_a].reshape(1,4,3,2) #.transpose
+    x_ = SFloat[*(0..23).to_a].reshape(1,4,3,2)
     x  = input_variable([3,2])
-    future_value(x).eval({x => x_}).to_narray #.transpose.reshape(1,4,3,2)
+    assert_equal(SFloat[[[[6, 7],
+                          [8, 9],
+                          [10, 11]],
+                         [[12, 13],
+                          [14, 15],
+                          [16, 17]],
+                         [[18, 19],
+                          [20, 21],
+                          [22, 23]],
+                         [[0, 0],
+                          [0, 0],
+                          [0, 0]]]],
+                 future_value(x).eval({x => x_}).to_narray )
+  end
+
+  def test_past_value
+    x_ = SFloat[*(0..23).to_a].reshape(1,4,3,2)
+    x  = input_variable([3,2])
+    assert_equal(SFloat[[[[0, 0],
+                          [0, 0],
+                          [0, 0]],
+                         [[0, 1],
+                          [2, 3],
+                          [4, 5]],
+                         [[6, 7],
+                          [8, 9],
+                          [10, 11]],
+                         [[12, 13],
+                          [14, 15],
+                          [16, 17]]]],
+                 past_value(x).eval({x => x_}).to_narray)
   end
 
   # FIXME
   def test_edit_distance_error
     x = input_variable([2])
     y = input_variable([2])
-    f = edit_distance_error(x, y, 0, 1, 1, true, [1])
-    f.eval({ x =>  Numo::SFloat[[1, 3], [2, 0]], y => Numo::SFloat[[2, 0], [2, 0]] }).shape
+    edit_distance_error(x, y, 0, 1, 1, true, [1])
+#    f.eval({ x =>  Numo::SFloat[[1, 3], [2, 0]], y => Numo::SFloat[[2, 0], [2, 0]] }).shape
   end
 
 end

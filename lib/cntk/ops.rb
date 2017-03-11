@@ -175,7 +175,7 @@ module Ops
     CNTK.__times__(right, left, output_rank, name)
   end
 
-  def transpose_times(left, right, output_rank = 1, name="")
+  def times_transpose(left, right, output_rank = 1, name="")
     left, right = Ops::convert_to_variable( left, right )
     CNTK.__transpose_times__(right, left, output_rank, name="")
   end
@@ -190,9 +190,14 @@ module Ops
     CNTK.__element_select__(x, if_true, if_else, name)
   end
 
-  def future_value(x, init=0, time_setp=1, name="")
+  def future_value(x, init=0, time_step=1, name="")
     x, init = Ops::convert_to_variable( x, init )
-    CNTK.__future_value__(x, init, time_setp, name)
+    CNTK.__future_value__(x, init, time_step, name)
+  end
+
+  def past_value(x, init=0, time_step=1, name="")
+    x, init = Ops::convert_to_variable( x, init )
+    CNTK.__past_value__(x, init, time_step, name)
   end
 
   # FIXME
