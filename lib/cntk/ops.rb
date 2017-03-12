@@ -19,6 +19,14 @@ module Ops
       end
     end
 
+    def reverse_dynamic_axes(axes)
+      axes = [axes] unless axes.is_a?(Array)
+      axes.each{|ax|
+        raise ArgumentError, "Axis expected" unless ax.is_a?(Axis)
+      }
+      axes.reverse
+    end
+
     def convert_to_pooling_type(type)
       case type
       when :max
@@ -49,7 +57,7 @@ module Ops
         else
           raise ArgumentError, "the output size of Function expected to be 1"
         end
-      when Numo::NArray, Numeric
+      when Value, Numo::NArray, Numeric
         Ops.constant(x)
       when Array
         Ops.constant( dtype[*x] )
@@ -79,6 +87,9 @@ module Ops
 
   module_function
   
+  #
+  # variable ops
+  #
   def input_variable(shape, dtype: DataType_Float, needs_grad: false,
                      is_sparse: false, 
                      dynamic_axes: Axis.default_input_variable_dynamic_axes(), 
@@ -102,10 +113,13 @@ module Ops
     Constant.create(*args)
   end
 
-  def parameter(*args) #shape: nil, init_val: nil, dtype: nil, device: nil, name: "")
+  def parameter(*args)
     Parameter.create(*args)
   end
 
+  #
+  # ops
+  #
   def alias(x, name="")
     x = Ops.convert_to_variable( x )
     CNTK.__alias__(x, name)
@@ -286,6 +300,14 @@ module Ops
   def random_sample_inclusion_frequency(weights, num_samples, allow_dup, name="")
     weights = Ops.convert_to_variable( weights )
     CNTK.__random_sample_inclusion_frequency__(weights, num_samples, allow_dup, name)
+  end
+
+  def dropout(x, rate=0.0, name="")
+    if rate < 0 or rate >= 1
+      raise ArgumentError, "dropout_rate must be in the interval [0,1)"
+    end
+    x = Ops.convert_to_variable( x )
+    CNTK.__dropout__(x, rate, name)
   end
 
   # FIXME

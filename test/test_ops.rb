@@ -253,7 +253,9 @@ class TestCNTK < Test::Unit::TestCase
   end
 
   def test_random_sample
-    p random_sample(SFloat[0.1,0.1,0.1,0.7], 10, true).eval({})
+    eye_ = SFloat.eye(4)
+    ret = random_sample(SFloat[0.1,0.1,0.1,0.7], 10, true).eval({})
+    times( ret, eye_ ).eval.to_narray
   end
 
   # FIXME

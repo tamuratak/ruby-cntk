@@ -38,7 +38,7 @@ module CNTK
   module VariableExtend
     def create_from(val, shape, dtype, device, name)
       case val
-      when NDArrayView, Variable, Numo::NArray
+      when NDArrayView, Value, Variable, Numo::NArray
         if shape
           raise "can't accept #{val.class} and shape at the same time" 
         end
@@ -47,15 +47,19 @@ module CNTK
           new(val)
         when NDArrayView
           new(val, name)
+        when Value
+          new(val.data, name)
         else
           new(NDArrayView.create(val), name)
         end
-      else
+      when Numeric, Dictionary
         if shape
           new(shape, dtype, val, device, name)
         else
           new([], dtype, val, device, name)
         end
+      else
+        raise ArgumentError, "NDArrayView, Value, Variable, Numo::NArray, Initializer, or Numeric expected"
       end
     end
   end
