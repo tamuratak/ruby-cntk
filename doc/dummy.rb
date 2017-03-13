@@ -192,63 +192,60 @@ class Dictionary
 end
 
 class DictionaryValue
-  def DictionaryValue::create
+
+  # constants for types
+  Type_None
+  Type_Bool
+  Type_Int
+  Type_SizeT
+  Type_Float
+  Type_Double
+  Type_String
+  Type_NDShape
+  Type_Axis
+  Type_Vector
+  Type_Dictionary
+  Type_NDArrayView
+
+  # @param  [Hash, Boolean, Numeric, String, NDShape, Axis, Array<DictionaryValue>, Dictionary, NDArrayView]
+  # @return [DictionaryValue]
+  def DictionaryValue::create(h)
   end
 
-  def DictionaryValue::load
+  # @param  [String] filename
+  # @return [DictionaryValue]
+  def DictionaryValue::load(filename)
   end
 
+  # @return [String]
   def DictionaryValue::type_name
   end
 
-  def ==
+  # @param  [DictionaryValue] other
+  # @return [Boolean]
+  def ==(other)
   end
 
+  # @return [Boolean]
   def has_value
   end
 
-  def save
+  # @param [String] filename
+  def save(filename)
   end
 
+  # @return [Boolean, Numeric, String, NDShape, Axis, Array<DictionaryValue>, Dictionary, NDArrayView]
   def value
   end
 
-  def value_axis__
-  end
-
-  def value_bool__
-  end
-
-  def value_dict__
-  end
-
-  def value_double__
-  end
-
-  def value_float__
-  end
-
-  def value_int__
-  end
-
-  def value_ndarrayview__
-  end
-
-  def value_size_t__
-  end
-
+  # @return [Type_None, Type_Bool, Type_Int, Type_SizeT, Type_Float, Type_Double, Type_String, Type_NDShape, Type_Axis, Type_Vector, Type_Dictionary, Type_NDArrayView]
   def value_type
-  end
-
-  def value_vec_dict_value__
-  end
-
-  def value_wstring__
   end
 
 end
 
 class DistributedCommunicator
+
   def DistributedCommunicator::finalize
   end
 
@@ -279,6 +276,7 @@ class DistributedCommunicator
 end
 
 class DistributedLearner
+
   def get_communicator
   end
 
@@ -300,6 +298,7 @@ class DistributedLearner
 end
 
 class DistributedWorkerDescriptor
+
   def ==
   end
 
@@ -321,18 +320,24 @@ class DistributedWorkerDescriptor
 end
 
 class Function
+
   def Function::deserialize
   end
 
   def Function::load_model
   end
 
-  def <<
+  # @param  [Variable, Function] other
+  # @return [Function]
+  def <<(other)
   end
 
-  def >>
+  # @param  [Function] other
+  # @return [Function]
+  def >>(other)
   end
 
+  # @return [Array<Variable>]
   def arguments
   end
 
@@ -393,9 +398,11 @@ class Function
   def op_name
   end
 
+  # @return [Variable]
   def output
   end
 
+  # @return [Array<Variable>]
   def outputs
   end
 
