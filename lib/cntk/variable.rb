@@ -6,7 +6,11 @@ module CNTK
     DataType = { DataType_Float => Numo::SFloat, DataType_Double => Numo::DFloat, DataType_Unknown => nil }
 
     def is_scalar
-      [] == shape().to_a
+      shape().rank == 0
+    end
+
+    def dynamic_axes
+      __dynamic_axes__.reverse
     end
 
     def *(other)

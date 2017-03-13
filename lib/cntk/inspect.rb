@@ -8,7 +8,6 @@ module CNTK
       s = inspect_methods_p(mthds)
       "#<#{self.class} #{s}>"
     end
-
   end
 
   class StdUMapStreamInfoMinibatchData
@@ -16,6 +15,13 @@ module CNTK
     def inspect
       s = "{" + map{|k, v| k.inspect + " => " + v.inspect }.join(", ") + "}"
       "#<#{self.class}: #{s}>"
+    end
+  end
+
+  class Axis
+    include InspectUtil
+    def inspect
+      inspect_methods([:name, :is_dynamic_axis])
     end
   end
 

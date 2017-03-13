@@ -26,26 +26,22 @@ module CNTK
       call(func)
     end
 
-    def forward(*args)
-      if args.length > 1
-        return __forward__(*args) #FIXME
-      elsif args.length == 1
-        input = convert_to_value(args[0])
-        out = StdUMapVariableValue.new()
-        outputs().each{|out_var| 
-          # By setting nullptr, Forward function implemented in C++ will allocate Value object with required storage.
-          out.__set_nullptr__(out_var)
-        }
-        b = __forward__(input, out)
-        # FIXME. we will remove this line.
-        out = remove_dynamic_axes(out)
-        return [b, out]
-      end
+    def forward(argsmap, outmap: nil, keep_for_backward: false, device: DeviceDescriptor.use_default_device(), remove_dynamic_axes: true)
+      input = convert_to_value(argsmap)
+      out = StdUMapVariableValue.new()
+      outputs().each{|out_var| 
+        # By setting nullptr, Forward function implemented in C++ will allocate Value object with required storage.
+        out.__set_nullptr__(out_var)
+      }
+      b = __forward__(input, out)
+      # FIXME. we will remove this line.
+      out = remove_dynamic_axes(out) if remove_dynamic_axes
+      return [b, out]
     end
 
-    def eval(*args)
-      args = [{}] if args == []
-      _, outmap = forward(*args)
+    def eval(argsmap=nil, device: DeviceDescriptor.use_default_device(), remove_dynamic_axes: true)
+      argsmap = {} if argsmap == nil
+      _, outmap = forward(argsmap, device: device, remove_dynamic_axes: remove_dynamic_axes)
       if outmap.size > 1
         outmap
       else

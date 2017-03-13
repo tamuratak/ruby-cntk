@@ -15,6 +15,21 @@ class TestCNTK < Test::Unit::TestCase
                                                    constant(Numo::DFloat[1]) ) )
   end
 
+  def test_input_variable
+    x_ = SFloat[*(0..23).to_a].reshape(4,1,3,2)
+    x  = input_variable([3,2])#, dynamic_axes: [Axis.default_batch_axis(), Axis.default_dynamic_axis] )
+    f = combine([x])
+    assert_equal(f.output.dynamic_axes,
+                 [Axis.default_batch_axis(), Axis.default_dynamic_axis])
+    assert_equal(x.shape,
+                 f.output.shape)
+    val = f.eval({x => x_}, remove_dynamic_axes:true)
+    assert_equal(x_.shape,
+                 val.shape)
+    assert_equal(x_,
+                 val.to_narray)
+  end
+
   def test_constant
     v = input_variable([3])
     f = 2 * v

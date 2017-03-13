@@ -92,16 +92,29 @@ module Ops
   #
   def input_variable(shape, dtype: DataType_Float, needs_grad: false,
                      is_sparse: false, 
-                     dynamic_axes: Axis.default_input_variable_dynamic_axes(), 
+                     dynamic_axes: nil,
                      name: '')
+    if dynamic_axes
+      dynamic_axes = dynamic_axes.reverse
+    else
+      dynamic_axes = Axis.default_input_variable_dynamic_axes()
+    end
     CNTK.__input_variable__(shape, is_sparse, dtype, needs_grad, name, dynamic_axes)
   end
   
   def output_variable(shape: nil, dtype: nil, dynamic_axes: nil, name: "")
+    if dynamic_axes
+      dynamic_axes = dynamic_axes.reverse
+    end
     CNTK.__output_variable__(shape, dtype, dynamic_axes, name)
   end
 
-  def placeholder_variable(shape: NDShape.unknown.dimensions(), name: "", dynamic_axes: Axis.unknown_dynamic_axes)
+  def placeholder_variable(shape: NDShape.unknown.dimensions(), name: "", dynamic_axes: nil)
+    if dynamic_axes
+      dynamic_axes = dynamic_axes.reverse
+    else
+      dynamic_axes = Axis.unknown_dynamic_axes
+    end
     CNTK.__placeholder_variable__(shape, name, dynamic_axes)
   end
 
