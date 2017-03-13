@@ -1,4 +1,5 @@
 module CNTK
+
   class Function
 
     def coerce(other)

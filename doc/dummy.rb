@@ -76,6 +76,21 @@ class Axis
 
 end
 
+class BackPropState
+
+  # @return [DeviceDescriptor]
+  def device
+  end
+
+  # @return [Function]
+  def function
+  end
+
+  # @return [Hash<Variable, Value>]
+  def saved_forward_prop_values
+  end
+
+end
 class Constant < Variable
 
   # @param  [Numo::SFloat, Numo::DFloat, Numeric, Array<Numeric>] arg
@@ -321,10 +336,15 @@ end
 
 class Function
 
-  def Function::deserialize
+  # @param  [Dictionary] dict
+  # @param  [DeviceDescriptor] device
+  # @return [Function]
+  def Function::deserialize(dict, device)
   end
 
-  def Function::load_model
+  # @param  [String] filename
+  # @return [Function]
+  def Function::load_model(filename)
   end
 
   # @param  [Variable, Function] other
@@ -341,6 +361,7 @@ class Function
   def arguments
   end
 
+  # @return [Dictionary]
   def attributes
   end
 
@@ -350,10 +371,12 @@ class Function
   def block_arguments_mapping
   end
 
+  # @return [Function]
   def block_root
   end
 
-  def call
+  # @return [Function]
+  def call(other)
   end
 
   def clone
@@ -362,10 +385,8 @@ class Function
   def coerce
   end
 
+  # @return [Array<Constant>]
   def constants
-  end
-
-  def convert_to_value
   end
 
   def current_version
@@ -383,18 +404,23 @@ class Function
   def inputs
   end
 
+  # @return [Boolean]
   def is_block
   end
 
+  # @return [Boolean]
   def is_composite
   end
 
+  # @return [Boolean]
   def is_primitive
   end
 
+  # @return [String]
   def name
   end
 
+  # @return [String]
   def op_name
   end
 
@@ -406,39 +432,48 @@ class Function
   def outputs
   end
 
+  # @return [Array<Parameter>]
   def parameters
   end
 
+  # @return [Array<Variable>]
   def placeholders
   end
 
+  # @return [nil]
   def print_graph
   end
 
-  def remove_dynamic_axes
+  # @param [Variable] var
+  def replace_placeholder(var)
   end
 
-  def replace_placeholder
-  end
-
-  def replace_placeholders
+  # @param [Hash<Variable, Variable>] h
+  def replace_placeholders(h)
   end
 
   def restore_model
   end
 
+  # @return [Function]
   def root_function
   end
 
-  def save_model
+  # @param  [String] filename
+  # @return [nil]
+  def save_model(filename)
   end
 
+  # @return [Dictionary]
   def serialize
   end
 
-  def set_name
+  # @param [String] name
+  # @return [nil]
+  def set_name(name)
   end
 
+  # @return [String]
   def uid
   end
 

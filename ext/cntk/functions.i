@@ -2,13 +2,18 @@
   %nodefaultctor BackPropState;
   class BackPropState {
   public:
-    //    BackPropState(const FunctionPtr&, const DeviceDescriptor&, const std::unordered_map<Variable, ValuePtr>& forwardPropValuesToSave = {});
+    //    BackPropState(const FunctionPtr& function, const DeviceDescriptor& computeDevice, const std::unordered_map<Variable, ValuePtr>& forwardPropValuesToSave = {});
     ~BackPropState();
 
     FunctionPtr Function();
-    //    DeviceDescriptor Device();
     std::unordered_map<Variable, ValuePtr>& SavedForwardPropValues();
-    
+
+    %extend {
+      %newobject device;
+      DeviceDescriptor* device() {
+        return new CNTK::DeviceDescriptor((*$self).Device());
+      }
+    }
   };
   enum class ParameterCloningMethod {
     Share, Clone, Freeze,
@@ -32,6 +37,9 @@
                   std::unordered_map<Variable, ValuePtr>& outputs,
                   const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     FunctionPtr Clone(ParameterCloningMethod parameterCloneMethod = ParameterCloningMethod::Clone, const std::unordered_map<Variable, Variable>& replacements = {});
+
+    FunctionPtr FindByName(const std::wstring& name, bool nestedSearchInsideBlockFunction = false);
+    std::vector<FunctionPtr> FindAllWithName(const std::wstring& name, bool nestedSearchInsideBlockFunction = false);
 
     size_t CurrentVersion();
     std::wstring& Name();

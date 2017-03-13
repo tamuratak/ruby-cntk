@@ -188,7 +188,7 @@ namespace CNTK {
   };
 
   %nodefaultctor DeviceDescriptor;
-  class DeviceDescriptor 
+  class DeviceDescriptor
   {
   public:
     unsigned int Id();
