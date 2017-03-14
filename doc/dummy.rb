@@ -82,7 +82,6 @@ class BackPropState
   def device
   end
 
-  # @return [Function]
   def function
   end
 
@@ -365,7 +364,11 @@ class Function
   def attributes
   end
 
-  def backward
+  # @param  [BackPropState]         state
+  # @param  [Hash<Variable,Value>]  root_gradients
+  # @param  [Array<Variable>]       variables
+  # @return [Hash<Variables,Value>] 
+  def backward(state, root_gradients, variables)
   end
 
   def block_arguments_mapping
@@ -379,28 +382,39 @@ class Function
   def call(other)
   end
 
-  def clone
-  end
-
-  def coerce
+  # @param  [ParameterCloningMethod_Share, ParameterCloningMethod_Clone, ParameterCloningMethod_Freeze] clone_type
+  # @param  [Hash<Variable,Variable>] replacement
+  # @return [Function]
+  def clone(clone_type, replacement)
   end
 
   # @return [Array<Constant>]
   def constants
   end
 
+  # @return [Integer]
   def current_version
   end
 
-  def eval
+  # @param  [Hash<Variable,...>] argsmap
+  # @param  [Hash] opt
+  # @option opt [DeviceDescriptor] :device
+  # @return [Function]
+  def eval(argsmap, opt = {})
   end
 
   def evaluate
   end
 
-  def forward
+  # @param  [Hash<Variable,...>] argsmap
+  # @param  [Hash] opt
+  # @option opt [Boolean] :keep_for_backward
+  # @option opt [DeviceDescriptor] :device
+  # @return [Function]
+  def forward(argsmap, opt = {})
   end
 
+  # @return [Array<Variable>]
   def inputs
   end
 
@@ -452,7 +466,9 @@ class Function
   def replace_placeholders(h)
   end
 
-  def restore_model
+  # @param  [String] filename
+  # @return [nil]
+  def restore_model(filename)
   end
 
   # @return [Function]
@@ -480,6 +496,7 @@ class Function
 end
 
 class Learner
+
   def Learner::adagrad
   end
 
@@ -534,6 +551,7 @@ class Learner
 end
 
 class MinibatchData
+
   def data
   end
 
@@ -564,6 +582,7 @@ class MinibatchData
 end
 
 class MinibatchInfo
+
   def at_end_of_data
   end
 
@@ -594,6 +613,7 @@ class MinibatchInfo
 end
 
 class MinibatchSource
+
   def get_checkpoint_state
   end
 
@@ -612,6 +632,7 @@ class MinibatchSource
 end
 
 class MinibatchTable
+
   def []
   end
 
@@ -1017,6 +1038,7 @@ class Ops
 end
 
 class Parameter < Variable
+
   def Parameter::create
   end
 
@@ -1035,6 +1057,7 @@ class Parameter < Variable
 end
 
 class StreamInformation
+
   def ==
   end
 
@@ -1074,6 +1097,7 @@ class StreamInformation
 end
 
 class Trainer
+
   def Trainer::create
   end
 
@@ -1116,18 +1140,21 @@ class Trainer
 end
 
 class TrainingParameterPerMinibatchSchedule
+
   def []
   end
 
 end
 
 class TrainingParameterPerSampleSchedule
+
   def []
   end
 
 end
 
 class TrainingSession
+
   def get_minibatch_size
   end
 
@@ -1161,6 +1188,7 @@ class TrainingSession
 end
 
 class Value
+
   def Value::create
   end
 
