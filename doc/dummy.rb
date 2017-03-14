@@ -31,7 +31,7 @@ class Axis
   def Axis::end_static_axis
   end
 
-  # @param  [Integer, Axis] n
+  # @param  n [Integer, Axis]
   # @return [Axis]
   def Axis::from_num(n)
   end
@@ -41,15 +41,15 @@ class Axis
   end
 
   # @overload initialize(n)
-  #   @param [Integer] n
+  #   @param n [Integer]
   #
   # @overload initialize(name, ordered)
-  #   @param [String]  name
-  #   @param [Boolean] ordered (true)
+  #   @param name    [String]
+  #   @param ordered [Boolean]  (true)
   def initialize
   end
 
-  # @param [Axis] other
+  # @param other [Axis]
   # @return [Boolean]
   def ==(other)
   end
@@ -92,17 +92,17 @@ class BackPropState
 end
 class Constant < Variable
 
-  # @param  [Numo::SFloat, Numo::DFloat, Numeric, Array<Numeric>] arg
+  # @param arg [Numo::SFloat, Numo::DFloat, Numeric, Array<Numeric>]
   # @return [Constant]
   def Constant::create(arg)
   end
 
-  # @param  [Numeric] n
+  # @param n [Numeric]
   # @return [Constant]
   def Constant::scalar(n)
   end
 
-  # @param  [Variable] other
+  # @param other [Variable]
   # @return [Function]
   def *(other)
   end
@@ -135,7 +135,7 @@ class DeviceDescriptor
   def DeviceDescriptor::gpudevice
   end
 
-  # @param [DeviceDescriptor] device
+  # @param device [DeviceDescriptor]
   # @return [nil]
   def DeviceDescriptor::set_default_device(device)
   end
@@ -144,7 +144,7 @@ class DeviceDescriptor
   def DeviceDescriptor::use_default_device
   end
 
-  # @param  [DeviceDescriptor] other
+  # @param other [DeviceDescriptor]
   # @return [Boolean]
   def ==(other)
   end
@@ -161,12 +161,12 @@ end
 
 class Dictionary
   
-  # @param  [Hash]
+  # @param h [Hash]
   # @return [Dictionary]
   def Dictionary::create(h)
   end
 
-  # @param  [String] filename
+  # @param filename [String]
   # @return [Dictionary] 
   def Dictionary::load(filename)
   end
@@ -174,13 +174,13 @@ class Dictionary
   def ==(other)
   end
 
-  # @param  [String] key
+  # @param key [String]
   # @return [DictionaryValue]
   def [](key)
   end
 
-  # @param  [String] key
-  # @param  [DictionaryValue] val
+  # @param key [String]
+  # @param val [DictionaryValue]
   def []=(key, val)
   end
 
@@ -189,12 +189,12 @@ class Dictionary
   def add(other)
   end
 
-  # @param  [String]  key
+  # @param key [String]
   # @return [Boolean]
   def contains(key)
   end
 
-  # @param [String] filename
+  # @param filename [String]
   # @return [nil]
   def save(filename)
   end
@@ -221,12 +221,12 @@ class DictionaryValue
   Type_Dictionary
   Type_NDArrayView
 
-  # @param  [Hash, Boolean, Numeric, String, NDShape, Axis, Array<DictionaryValue>, Dictionary, NDArrayView]
+  # @param h [Hash, Boolean, Numeric, String, NDShape, Axis, Array<DictionaryValue>, Dictionary, NDArrayView]
   # @return [DictionaryValue]
   def DictionaryValue::create(h)
   end
 
-  # @param  [String] filename
+  # @param filename [String]
   # @return [DictionaryValue]
   def DictionaryValue::load(filename)
   end
@@ -235,7 +235,7 @@ class DictionaryValue
   def DictionaryValue::type_name
   end
 
-  # @param  [DictionaryValue] other
+  # @param other [DictionaryValue]
   # @return [Boolean]
   def ==(other)
   end
@@ -244,7 +244,7 @@ class DictionaryValue
   def has_value
   end
 
-  # @param [String] filename
+  # @param filename [String]
   def save(filename)
   end
 
@@ -335,23 +335,23 @@ end
 
 class Function
 
-  # @param  [Dictionary] dict
-  # @param  [DeviceDescriptor] device
+  # @param dict   [Dictionary]
+  # @param device [DeviceDescriptor]
   # @return [Function]
   def Function::deserialize(dict, device)
   end
 
-  # @param  [String] filename
+  # @param filename [String]
   # @return [Function]
   def Function::load_model(filename)
   end
 
-  # @param  [Variable, Function] other
+  # @param other [Variable, Function]
   # @return [Function]
   def <<(other)
   end
 
-  # @param  [Function] other
+  # @param other [Function]
   # @return [Function]
   def >>(other)
   end
@@ -364,9 +364,9 @@ class Function
   def attributes
   end
 
-  # @param  [BackPropState]         state
-  # @param  [Hash<Variable,Value>]  root_gradients
-  # @param  [Array<Variable>]       variables
+  # @param state          [BackPropState]
+  # @param root_gradients [Hash<Variable,Value>]
+  # @param variables      [Array<Variable>]
   # @return [Hash<Variables,Value>] 
   def backward(state, root_gradients, variables)
   end
@@ -382,8 +382,8 @@ class Function
   def call(other)
   end
 
-  # @param  [ParameterCloningMethod_Share, ParameterCloningMethod_Clone, ParameterCloningMethod_Freeze] clone_type
-  # @param  [Hash<Variable,Variable>] replacement
+  # @param clone_type  [ParameterCloningMethod_Share, ParameterCloningMethod_Clone, ParameterCloningMethod_Freeze]
+  # @param replacement [Hash<Variable,Variable>]
   # @return [Function]
   def clone(clone_type, replacement)
   end
@@ -396,8 +396,8 @@ class Function
   def current_version
   end
 
-  # @param  [Hash<Variable,...>] argsmap
-  # @param  [Hash] opt
+  # @param argsmap [Hash<Variable,...>]
+  # @param opt     [Hash]
   # @option opt [DeviceDescriptor] :device
   # @return [Function]
   def eval(argsmap, opt = {})
@@ -406,8 +406,8 @@ class Function
   def evaluate
   end
 
-  # @param  [Hash<Variable,...>] argsmap
-  # @param  [Hash] opt
+  # @param argsmap [Hash<Variable,...>]
+  # @param opt     [Hash]
   # @option opt [Boolean] :keep_for_backward
   # @option opt [DeviceDescriptor] :device
   # @return [Function]
@@ -458,15 +458,15 @@ class Function
   def print_graph
   end
 
-  # @param [Variable] var
+  # @param var [Variable]
   def replace_placeholder(var)
   end
 
-  # @param [Hash<Variable, Variable>] h
+  # @param h [Hash<Variable, Variable>]
   def replace_placeholders(h)
   end
 
-  # @param  [String] filename
+  # @param filename [String]
   # @return [nil]
   def restore_model(filename)
   end
@@ -475,7 +475,7 @@ class Function
   def root_function
   end
 
-  # @param  [String] filename
+  # @param filename [String]
   # @return [nil]
   def save_model(filename)
   end
@@ -484,7 +484,7 @@ class Function
   def serialize
   end
 
-  # @param [String] name
+  # @param name [String]
   # @return [nil]
   def set_name(name)
   end
@@ -729,6 +729,12 @@ class MomentumAsTimeConstantSchedule
 end
 
 class MomentumSchedule
+
+  # @param val [Float]
+  # @return [MomentumSchedule]
+  def initialize(val)
+  end
+
 end
 
 class NDArrayView
