@@ -90,7 +90,7 @@ module Ops
   #
   # variable ops
   #
-  def input_variable(shape, dtype: DataType_Float, needs_grad: false,
+  def input_variable(shape, dtype: DataType_Float, needs_gradient: false,
                      is_sparse: false, 
                      dynamic_axes: nil,
                      name: '')
@@ -99,7 +99,7 @@ module Ops
     else
       dynamic_axes = Axis.default_input_variable_dynamic_axes()
     end
-    CNTK.__input_variable__(shape, is_sparse, dtype, needs_grad, name, dynamic_axes)
+    CNTK.__input_variable__(shape, is_sparse, dtype, needs_gradient, name, dynamic_axes)
   end
   
   def output_variable(shape: nil, dtype: nil, dynamic_axes: nil, name: "")

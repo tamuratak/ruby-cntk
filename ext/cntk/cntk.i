@@ -104,6 +104,7 @@ namespace CNTK {
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
 %rename(__forward__)              CNTK::Function::Forward;
+%rename(__backward__)             CNTK::Function::Backward;
 %rename(__dynamic_axes__)         CNTK::Variable::DynamicAxes;
 // %rename(__times_transpose__)          CNTK::TransposeTimes;
 %rename(l1_regularization_weight) CNTK::AdditionalLearningOptions::l1RegularizationWeight;

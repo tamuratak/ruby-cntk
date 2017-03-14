@@ -27,14 +27,14 @@ module CNTK
       call(func)
     end
 
-    def forward(argsmap, outmap: nil, keep_for_backward: false, device: DeviceDescriptor.use_default_device(), remove_dynamic_axes: true)
+    def forward(argsmap, outputs = [], keep_for_backward: [], device: DeviceDescriptor.use_default_device(), remove_dynamic_axes: true)
       input = convert_to_value(argsmap)
       out = StdUMapVariableValue.new()
-      outputs().each{|out_var| 
+      outputs.each{|out_var|
         # By setting nullptr, Forward function implemented in C++ will allocate Value object with required storage.
         out.__set_nullptr__(out_var)
       }
-      b = __forward__(input, out)
+      b = __forward__(input, out, device, keep_for_backward)
       # FIXME. we will remove this line.
       out = remove_dynamic_axes(out) if remove_dynamic_axes
       return [b, out]
@@ -42,7 +42,7 @@ module CNTK
 
     def eval(argsmap=nil, device: DeviceDescriptor.use_default_device(), remove_dynamic_axes: true)
       argsmap = {} if argsmap == nil
-      _, outmap = forward(argsmap, device: device, remove_dynamic_axes: remove_dynamic_axes)
+      _, outmap = forward(argsmap, outputs(), device: device, remove_dynamic_axes: remove_dynamic_axes)
       if outmap.size > 1
         outmap
       else
@@ -50,16 +50,26 @@ module CNTK
       end
     end
 
+    def backward(state, root_gradients, variables, remove_dynamic_axes: true)
+      root_gradients = convert_to_value(root_gradients)
+      out = StdUMapVariableValue.new()
+      variables.each{|var|
+        out.__set_nullptr__(var)
+      }
+      __backward__(state, root_gradients, out)
+      out = remove_dynamic_axes(out)
+    end
+
     def convert_to_value(h)
-      input = {}
+      ret = {}
       h.each_pair{|k,val|
         if val.respond_to?(:row_major?)
-          input[k] = Value.create(val)
+          ret[k] = Value.create(val)
         else
-          input[k] = val
+          ret[k] = val
         end
       }
-      return input
+      return ret
     end
 
     def remove_dynamic_axes(out)

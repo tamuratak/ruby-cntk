@@ -70,6 +70,8 @@
 
     Dictionary Serialize();
     static FunctionPtr Deserialize(const Dictionary& dictionary, const ::CNTK::DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice());
+
+    static const int MaxNumOutputs = 64;
   };
 
 

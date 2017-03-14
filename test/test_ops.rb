@@ -11,8 +11,8 @@ class TestCNTK < Test::Unit::TestCase
   def test_highest_precision_type
     assert_equal( Numo::DFloat,
                   Ops::highest_precision_type( Numo::SFloat[1], 
-                                                   Numo::DFloat[1],
-                                                   constant(Numo::DFloat[1]) ) )
+                                               Numo::DFloat[1],
+                                               constant(Numo::DFloat[1]) ) )
   end
 
   def test_input_variable
@@ -30,15 +30,24 @@ class TestCNTK < Test::Unit::TestCase
                  val.to_narray)
   end
 
+  def test_backward
+    x_ = SFloat[4]
+    x = input_variable([1], needs_gradient: true)
+    f = sqrt(x)
+    state = f.forward({x => x_}, f.outputs, keep_for_backward: f.outputs)
+    assert_equal(SFloat[0.25],
+                 f.backward(state[0], {f.output => SFloat[1]}, [x]).values[0].to_narray)
+  end
+
   def test_constant
     v = input_variable([3])
     f = 2 * v
-    r = f.forward( { v => Numo::SFloat[1,2,3] } )
+    r = f.forward( { v => Numo::SFloat[1,2,3] }, f.outputs )
     assert_equal(Numo::SFloat[2,4,6],
                  r[1].values[0].to_narray)
 
     f = v * 2
-    r = f.forward( { v => Numo::SFloat[1,2,3] } )
+    r = f.forward( { v => Numo::SFloat[1,2,3] }, f.outputs )
     assert_equal(Numo::SFloat[2,4,6],
                  r[1].values[0].to_narray)
   end
