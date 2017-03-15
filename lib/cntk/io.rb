@@ -16,6 +16,20 @@ module CNTK
     CNTK.__create_composite_minibatch_source__(dict)
   end
 
+  class MinibatchSource
+
+    # @param minibatch_size_in_samples [Integer]
+    # @param device                    [DeviceDescriptor]
+    # @param num_data_partitions       [Integer]
+    # @param partition_index           [Integer]
+    # @return [MinibatchData]
+    def next_minibatch(minibatch_size_in_samples, device: DeviceDescriptor.use_default_device,
+                       num_data_partitions: 1, partition_index: 0)
+      mb = get_next_minibatch(0, minibatch_size_in_samples, num_data_partitions, partition_index, device)
+    end
+
+  end
+
   # std::unordered_map<StreamInfo, MinibatchData>
   class MinibatchTable 
     alias __get__ :[]

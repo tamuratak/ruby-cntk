@@ -9,6 +9,11 @@ DataType_Unknown
 DeviceKind_CPU
 DeviceKind_GPU
 
+# constants for the storage format of NDArrayView
+StorageFormat_Dense
+StorageFormat_SparseCSC
+StorageFormat_SparseBlockCol
+
 class Axis
 
   # @return [Axis]
@@ -497,135 +502,108 @@ end
 
 class Learner
 
-  def Learner::adagrad
-  end
-
-  def Learner::adam_sgd
-  end
-
-  def Learner::momentum_as_time_constant_schedule
-  end
-
-  def Learner::momentum_schedule
-  end
-
-  def Learner::momentum_sgd
-  end
-
-  def Learner::nesterov
-  end
-
-  def Learner::rmsprop
-  end
-
-  def Learner::sgd
-  end
-
-  def Learner::training_parameter_schedule
-  end
-
+  # @return [Dictionary]
   def create_checkpoint
   end
 
+  # @return [Float]
   def learning_rate
   end
 
+  # @return [Array<Parameter>]
   def parameters
   end
 
-  def reset_learning_rate
+  # @param schedule [LearningRateSchedule]
+  # @return [nil]
+  def reset_learning_rate(schedule)
   end
 
+  # @return [nil]
   def reset_smoothed_gradients
   end
 
-  def restore_from_checkpoint
+  # @param dict [Dictionary]
+  def restore_from_checkpoint(dict)
   end
 
+  # @return [Integer]
   def total_number_of_samples_seen
   end
 
-  def update
+  # @param grad      [Hash<Parameter,NDArrayView>]
+  # @param count     [Integer]
+  # @param sweep_end [Boolean]
+  # @return [Boolean]
+  def update(grad, count, sweep_end=false)
   end
 
 end
 
 class MinibatchData
 
-  def data
-  end
+  # @!attribute [rw] data
+  #   @return [Value]
+  attr :data
 
-  def data=
-  end
+  # @!attribute [rw] number_of_samples
+  #  @return [Integer]
+  attr :number_of_samples
 
-  def inspect
-  end
+  # @!attribute [rw] number_of_sequences
+  #  @return [Integer]
+  attr :number_of_sequences
 
-  def number_of_samples
-  end
-
-  def number_of_samples=
-  end
-
-  def number_of_sequences
-  end
-
-  def number_of_sequences=
-  end
-
-  def sweep_end
-  end
-
-  def sweep_end=
-  end
+  # @!attribute [rw] sweep_end
+  #   @return [Boolean]
+  attr :sweep_end
 
 end
 
 class MinibatchInfo
 
-  def at_end_of_data
-  end
+  # @!attribute [rw] at_end_of_data
+  #   @return [Boolean]
+  attr :at_end_of_data
 
-  def at_end_of_data=
-  end
+  # @!attribute [rw] eval_criterion_value
+  #   @return [NDArrayView]
 
-  def eval_criterion_value
-  end
-
-  def eval_criterion_value=
-  end
-
+  # @return [Boolean]
   def is_empty
   end
 
-  def number_of_samples
-  end
+  # @!attribute [rw] number_of_samples
+  #   @return [Integer]
+  attr :number_of_samples
 
-  def number_of_samples=
-  end
-
-  def training_loss_value
-  end
-
-  def training_loss_value=
-  end
+  # @!attribute [rw] training_loss_value
+  #   @return [NDArrayView]
+  attr :training_loss_value
 
 end
 
 class MinibatchSource
 
+  # @return [Dictionary]
   def get_checkpoint_state
   end
 
+  # @return [Hash<StreamInformation, MinibatchData>]
   def get_next_minibatch
   end
 
-  def restore_from_checkpoint
+  # @param dict [Dictionary]
+  # @return [nil]
+  def restore_from_checkpoint(dict)
   end
 
-  def stream_info
+  # @param name [String]
+  # @return [StreamInformation]
+  def stream_info(name)
   end
 
+  # @return [Array<StreamInformation>]
   def stream_infos
   end
 
@@ -639,93 +617,15 @@ class MinibatchTable
   def []=
   end
 
-  def __get__
-  end
-
-  def begin
-  end
-
-  def clear
-  end
-
-  def count
-  end
-
-  def delete
-  end
-
-  def dup
-  end
-
-  def each
-  end
-
-  def each_key
-  end
-
-  def each_value
-  end
-
-  def empty?
-  end
-
-  def end
-  end
-
-  def entries
-  end
-
-  def erase
-  end
-
-  def find
-  end
-
-  def get_allocator
-  end
-
-  def has_key?
-  end
-
-  def include?
-  end
-
-  def inspect
-  end
-
-  def key_iterator
-  end
-
-  def keys
-  end
-
-  def select
-  end
-
-  def size
-  end
-
-  def swap
-  end
-
-  def to_a
-  end
-
-  def to_s
-  end
-
-  def value_iterator
-  end
-
-  def values
-  end
-
-  def values_at
-  end
-
 end
 
 class MomentumAsTimeConstantSchedule
+
+  # @param val [Float]
+  # @return [MomentumAsTimeConstantSchedule]
+  def initialize(val)
+  end
+
 end
 
 class MomentumSchedule
@@ -738,81 +638,111 @@ class MomentumSchedule
 end
 
 class NDArrayView
-  def NDArrayView::create
+
+  # @param arry [Numo::NArray]
+  # @return [NDArrayView]
+  def NDArrayView::create(arry)
   end
 
   def alias
   end
 
-  def change_device
+  # @param device [DeviceDescriptor]
+  # @return [nil]
+  def change_device(device)
   end
 
-  def copy_from
+  # @param ndarray [NDArrayView]
+  # @return [nil]
+  def copy_from(ndarray)
   end
 
-  def deep_clone
+  # @param device    [DeviceDescriptor]
+  # @param read_only [Boolean]
+  # @return [NDArrayView]
+  def deep_clone(device, read_only = false)
   end
 
+  # @return [DataType_Float, DataType_Double, DataType_Unknown]
   def get_data_type
   end
 
+  # @return [StorageFormat_Dense, StorageFormat_SparseCSC, StorageFormat_SparseBlockCol]
   def get_storage_format
   end
 
+  # @return [Boolean]
   def is_read_only
   end
 
+  # @return [Boolean]
   def is_sparse
   end
 
-  def set_value
+  # @param val [Float]
+  # @return [nil]
+  def set_value(val)
   end
 
+  # @return [NDShape]
   def shape
   end
 
+  # @return [Numo::NArray]
   def to_narray
   end
 
+  # @return [Array<Float>]
   def to_vec
   end
 
 end
 
 class NDShape
+
+  # @return [NDShape]
   def NDShape::unknown
   end
 
-  def ==
+  # @param other [NDShape]
+  # @return [Boolean]
+  def ==(other)
   end
 
-  def append_shape
+  # @param shape [NDShape]
+  # @return [NDShape]
+  def append_shape(shape)
   end
 
+  # @return [Array<Integer>]
   def dimensions
   end
 
-  def inspect
-  end
-
+  # @return [Boolean]
   def is_unknown
   end
 
+  # @return [Integer]
   def rank
   end
 
+  # @return [Array<Integer>]
   def reverse
   end
 
-  def sub_shape
+  # @return [NDShape]
+  def sub_shape(begin_index, end_index)
   end
 
+  # @return [Array<Integer>]
   def to_a
   end
 
+  # @return [Array<Integer>]
   def to_ary
   end
 
+  # @return [Integer]
   def total_size
   end
 
@@ -1045,18 +975,20 @@ end
 
 class Parameter < Variable
 
-  def Parameter::create
-  end
-
+  # @return [Integer]
   def current_value_time_stamp
   end
 
+  # @return [nil]
   def record_value_update
   end
 
-  def set_value
+  # @param ndarray [NDArrayView]
+  # @return [nil]
+  def set_value(ndarray)
   end
 
+  # @return [NDArrayView]
   def value
   end
 
