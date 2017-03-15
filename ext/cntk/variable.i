@@ -114,7 +114,6 @@
     Value(const NDArrayViewPtr& data, const NDMaskPtr& mask);
     
     ~Value();
-    //    DeviceDescriptor Device();
     enum DataType GetDataType();
     enum StorageFormat GetStorageFormat();
     NDShape& Shape();
@@ -128,4 +127,11 @@
     ValuePtr Alias(bool readOnly = false);
     void CopyFrom(const Value& source);
     void CopyVariableValueTo(const Variable& outputVariable, std::vector<std::vector<size_t>>& sequences);
+
+    %extend {
+      %newobject device;
+      CNTK::DeviceDescriptor* device() {
+        return new CNTK::DeviceDescriptor((*$self).Device());
+      }
+    }
   };

@@ -87,7 +87,8 @@ namespace CNTK {
 %template(StdVectorPairVariableVariable)      std::vector< std::pair<CNTK::Variable, CNTK::Variable> >;
 %template(StdVectorDictionaryValue)           std::vector< CNTK::DictionaryValue >;
 %template(StdUMapVariableValue)               std::unordered_map< CNTK::Variable, CNTK::ValuePtr >;
-%template(StdUMapVariablevariable)            std::unordered_map< CNTK::Variable, CNTK::Variable >;
+%template(StdUMapVariableVariable)            std::unordered_map< CNTK::Variable, CNTK::Variable >;
+%template()                                   std::unordered_map< CNTK::Parameter, CNTK::NDArrayViewPtr>;
 %template(StdUSetVariable)                    std::unordered_set<CNTK::Variable>;
 %template(StdUSetDistributedWorkerDescriptor) std::unordered_set<CNTK::DistributedWorkerDescriptor>;
 %template(MinibatchTable)                     std::unordered_map<CNTK::StreamInformation, CNTK::MinibatchData>;
