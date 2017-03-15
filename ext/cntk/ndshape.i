@@ -28,6 +28,29 @@
     }
   };
 
+  enum class MaskKind : char
+  {Invalid = 0, Valid = 1, SequenceBegin = 2,};
+
+  class NDMask
+  {
+  public:
+    NDMask(const NDShape& shape, const DeviceDescriptor& device = DeviceDescriptor::CPUDevice());
+    ~NDMask();
+
+    void InvalidateSection(const std::vector<size_t>& sectionOffset, const NDShape& sectionShape);
+    void MarkSequenceBegin(const std::vector<size_t>& offset);
+    void MarkSequenceBegin(const std::vector<size_t>& offset, const NDShape& sectionShape);
+    void Clear();
+    size_t MaskedCount();
+    //    DeviceDescriptor Device() const { return m_device; }
+    const NDShape& Shape();
+    const MaskKind* DataBuffer();
+    NDMaskPtr DeepClone(const DeviceDescriptor& device);
+    NDMaskPtr DeepClone();
+    NDMaskPtr Alias();
+    void CopyFrom(const NDMask& source);
+ };
+
  class Axis 
   {
   public:
