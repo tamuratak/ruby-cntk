@@ -996,41 +996,29 @@ end
 
 class StreamInformation
 
-  def ==
+  # @param other [StreamInformation]
+  # @return [Boolean]
+  def ==(other)
   end
 
-  def element_type
-  end
+  # @!attribute [rw] element_type
+  #   @return [DataType_Double, DataType_Float, DataType_Unknown]
+  attr :element_type
 
-  def element_type=
-  end
+  # @!attribute [rw] id
+  #   @return [Integer]
+  attr :id
 
-  def id
-  end
+  # @!attribute [rw] name
+  #   @return [String]
 
-  def id=
-  end
+  # @!attribute [rw] sample_layout
+  #   @return [NDShape]
+  attr :sample_layout
 
-  def inspect
-  end
-
-  def name
-  end
-
-  def name=
-  end
-
-  def sample_layout
-  end
-
-  def sample_layout=
-  end
-
-  def storage_format
-  end
-
-  def storage_format=
-  end
+  # @!attribute [rw] storage_format
+  #   @return [StorageFormat_Dense, StorageFormat_SparseCSC, StorageFormat_SparseBlockCol]
+  attr :storage_format
 
 end
 
@@ -1039,36 +1027,48 @@ class Trainer
   def Trainer::create
   end
 
+  # @return [Function]
   def evaluation_function
   end
 
+  # @return [Function]
   def loss_function
   end
 
+  # @return [Function]
   def model
   end
 
+  # @return [Array<Learner>]
   def parameter_learners
   end
 
+  # @return [Float]
   def previous_minibatch_evaluation_average
   end
 
+  # @return [Float]
   def previous_minibatch_loss_average
   end
 
+  # @return [Integer]
   def previous_minibatch_sample_count
   end
 
-  def restore_from_checkpoint
+  # @param filename [String]
+  # @return [nil]
+  def restore_from_checkpoint(filename)
   end
 
-  def save_checkpoint
+  # @param filename [String]
+  # @return [nil]
+  def save_checkpoint(filename)
   end
 
   def test_minibatch
   end
 
+  # @return [Integer]
   def total_number_of_samples_seen
   end
 
@@ -1127,51 +1127,75 @@ end
 
 class Value
 
-  def Value::create
+  # @param val [NDArrayView, Numo::NArray]
+  # @return [Value]
+  def Value::create(val)
   end
 
-  def alias
+  # @param val [NDArrayView]
+  # @return [Value]
+  def initialize(val)
   end
 
-  def copy_from
+  # @param read_only [Boolean]
+  # @return [Value]
+  def alias(read_only=false)
+  end
+
+  # @param val [Value]
+  # @return [nil]
+  def copy_from(val)
   end
 
   def copy_variable_value_to
   end
 
+  # @return [NDArrayView]
   def data
   end
 
-  def deep_clone
+  # @param read_only [Boolean]
+  # @return [Value]
+  def deep_clone(read_only=true)
   end
 
+  # @return [DeviceDescriptor]
+  def device
+  end
+
+  # @return [DataType_Float, DataType_Double, DataType_Unknown]
   def get_data_type
   end
 
+  # @return [StorageFormat_Dense, StorageFormat_SparseCSC, StorageFormat_SparseBlockCol]
   def get_storage_format
   end
 
-  def inspect
-  end
-
+  # @return [Boolean]
   def is_read_only
   end
 
+  # @return [Boolean]
   def is_sparse
   end
 
   def mask
   end
 
+  # @return [Integer]
   def masked_count
   end
 
-  def reshape
+  # @param shape [Array<Integer>]
+  # @return [Value]
+  def reshape(shape)
   end
 
+  # @return [NDShape]
   def shape
   end
 
+  # @return [Numo::NArray]
   def to_narray
   end
 
