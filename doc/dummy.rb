@@ -1202,6 +1202,7 @@ class Value
 end
 
 class Variable
+
   def *
   end
 
@@ -1214,60 +1215,71 @@ class Variable
   def -@
   end
 
-  def ==
+  # @param other [Variable]
+  # @return [Boolean]
+  def ==(other)
   end
 
-  def __dynamic_axes__
-  end
-
-  def coerce
-  end
-
+  # @return [Array<Axis>]
   def dynamic_axes
   end
 
+  # @return [DataType_Float, DataType_Double, DataType_Unknown]
   def get_data_type
   end
 
+  # @return [Boolean]
   def is_constant
   end
 
+  # @return [Boolean]
   def is_input
   end
 
+  # @return [Boolean]
   def is_output
   end
 
+  # @return [Boolean]
   def is_parameter
   end
 
+  # @return [Boolean]
   def is_placeholder
   end
 
+  # @return [Boolean]
   def is_scalar
   end
 
+  # @return [Boolean]
   def is_sparse
   end
 
+  # @return [VariableKind]
   def kind
   end
 
+  # @return [String]
   def name
   end
 
+  # @return [Boolean]
   def needs_gradient
   end
 
+  # @return [Function]
   def owner
   end
 
+  # @return [NDShape]
   def shape
   end
 
   def to_function
   end
 
+  # @return [String]
   def uid
   end
 
