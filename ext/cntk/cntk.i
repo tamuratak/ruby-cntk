@@ -17,6 +17,8 @@
 
 
 %template() std::vector<bool>;
+%template() std::vector<char>;
+%template() std::vector<int>;
 %template() std::vector<size_t>;
 %template() std::vector<float>;
 %template() std::vector<double>;
@@ -106,6 +108,7 @@ namespace CNTK {
 %rename("%s", %$isconstructor) "";
 %rename(__forward__)              CNTK::Function::Forward;
 %rename(__backward__)             CNTK::Function::Backward;
+%rename(__create__)               CNTK::Value::Create;
 %rename(__dynamic_axes__)         CNTK::Variable::DynamicAxes;
 // %rename(__times_transpose__)          CNTK::TransposeTimes;
 %rename(l1_regularization_weight) CNTK::AdditionalLearningOptions::l1RegularizationWeight;

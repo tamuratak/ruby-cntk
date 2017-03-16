@@ -1,7 +1,6 @@
 require "test/unit"
 require "cntk"
 require "numo/narray"
-# require "nmatrix"
 
 class TestCNTK < Test::Unit::TestCase
   include CNTK

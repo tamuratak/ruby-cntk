@@ -49,6 +49,35 @@
     NDMaskPtr DeepClone();
     NDMaskPtr Alias();
     void CopyFrom(const NDMask& source);
+
+    %extend{
+      std::vector<int> to_vec() {
+        using namespace CNTK;
+        std::vector<size_t> cntk_dims = (*$self).Shape().Dimensions();
+        static_assert(cntk_dims.size()==2, "mask requires exactly two dimensions");
+        std::vector<size_t> dimensions = {cntk_dims[1], cntk_dims[0]};
+        size_t num_elements = dimensions[0] * dimensions[1];
+        std::vector<char> tmp(num_elements);
+        std::vector<int> ret(num_elements);
+        NDMask* cpuMask;
+
+        if ((*$self).Device() != DeviceDescriptor::CPUDevice()) {
+          cpuMask = new NDMask((*$self).Shape(), DeviceDescriptor::CPUDevice());
+          cpuMask->CopyFrom((*$self));
+        } else {
+          cpuMask = $self;
+        }
+
+        void* buffer = const_cast<void*>(reinterpret_cast<const void*>(cpuMask->DataBuffer()));
+        memcpy(tmp.data(), buffer, sizeof(char) * num_elements);
+        ret.assign(tmp.begin(), tmp.end());
+        if ((*$self).Device() != DeviceDescriptor::CPUDevice()) {
+          delete cpuMask;
+        }
+
+        return ret;
+      }
+    }
  };
 
  class Axis 
