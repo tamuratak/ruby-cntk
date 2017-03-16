@@ -64,7 +64,7 @@ module CNTK
       ret = {}
       h.each_pair{|k,val|
         if val.respond_to?(:row_major?)
-          ret[k] = Value.create(val)
+          ret[k] = Value.new(NDArrayView.create(val))
         else
           ret[k] = val
         end

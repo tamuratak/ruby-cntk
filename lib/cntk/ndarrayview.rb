@@ -9,6 +9,8 @@ module CNTK
           ta = a #a.transpose
         end
         case a
+        when NDArrayView
+          return a
         when Numo::DFloat
           dtype = DataType_Double
         when Numo::SFloat

@@ -99,7 +99,7 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_value
     m = Numo::SFloat[1,2,3,4,5,6].reshape(2,3)
-    assert_equal(m, Value.create(m).to_narray)
+    assert_equal(m, Value.new( NDArrayView.create(m) ).to_narray)
   end
 
   def test_dictionary
