@@ -1,5 +1,24 @@
 module CNTK
 class Trainer
+
+  # @param args [Hash<Variable,MinibatchData>]
+  # @option opt [Array<Variable>] :outputs
+  # @option opt [DeviceDescriptor] :device
+  def train_minibatch(args, outputs: nil, device: DeviceDescriptor.use_default_device)
+    if outputs
+      out = StdUMapVariableValue.new()
+      outputs.each{|out_var|
+        # By setting nullptr, Forward function implemented in C++ will allocate Value object with required storage.
+        out.__set_nullptr__(out_var)
+      }
+      updated = __train_minibatchdata__(args, out, device)
+      return [updated, out]
+    else
+      __train_minibatchdata__(args, device)
+    end
+  end
+
+
 class << self
 
   def create(model: nil, loss: nil, evalation: nil, learners: nil)
@@ -30,6 +49,6 @@ class << self
     end
   end
 
-end
-end
-end
+end # class << self
+end # class Trainer
+end # module CNTK

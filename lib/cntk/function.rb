@@ -2,6 +2,44 @@ module CNTK
 
   class Function
 
+    def check_ouputs_size_is_one
+      if outputs.size > 1
+        raise "the size of self.outputs is larger than 1"
+      end
+    end
+    private :check_ouputs_size_is_one
+
+    def dot(other)
+      check_ouputs_size_is_one()
+      outputs[0].dot(other)
+    end
+
+    def -@
+      check_ouputs_size_is_one()
+      - outputs[0]
+    end
+
+    def +(other)
+      check_ouputs_size_is_one()
+      outputs[0] + other
+    end
+
+    def -(other)
+      check_ouputs_size_is_one()
+      outputs[0] - other
+    end
+
+    def *(other)
+      check_ouputs_size_is_one()
+      outputs[0] * other
+    end
+
+    def /(other)
+      check_ouputs_size_is_one()
+      outputs[0] / other
+    end
+
+    # FIXME
     def coerce(other)
       if other.is_a?(Numeric)
         [Constant::scalar(output.get_data_type, other), self]

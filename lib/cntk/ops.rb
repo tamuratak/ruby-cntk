@@ -242,6 +242,7 @@ module Ops
   end
 
   def reshape(x, shape, begin_axis=Axis.new(0), end_axis=Axis.end_static_axis(), name="")
+    x = Ops.convert_to_variable( x )
     begin_axis = Ops.reverse_reshape_axis(begin_axis)
     end_axis   = Ops.reverse_reshape_axis(end_axis  )
     CNTK.__reshape__(x, shape, begin_axis, end_axis, name)

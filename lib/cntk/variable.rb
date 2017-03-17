@@ -13,20 +13,39 @@ module CNTK
       __dynamic_axes__.reverse
     end
 
-    def *(other)
-      if other.is_a?(Variable)
-        CNTK.__times__(self, other)
+    def reshape(shape)
+      Ops.reshape(self, shape)
+    end
+
+    # follow Numo::Narray
+    def dot(other)
+      if shape.rank == 1 and other.shape.rank == 1
+        ret = Ops.times( Ops.reshape(self,  [1,shape.total_size]),
+                         Ops.reshape(other, [other.shape.total_size, 1]) )
+        Ops.reshape(ret, [1])
       else
-        CNTK.__times__(self, CNTK::Ops.constant(other))
+        Ops.times(self, other)
       end
     end
 
+    def -@
+      Ops.negate(self)
+    end
+
+    def *(other)
+      Ops.element_times(self, other)
+    end
+
+    def /(other)
+      Ops.element_divide(self, other)
+    end
+
     def +(other)
-      CNTK.__plus__(self, other)
+      Ops.plus(self, other)
     end
 
     def -(other)
-      CNTK.__minus__(self, other)
+      Ops.minus(self, other)
     end
 
     def coerce(other)
@@ -86,7 +105,7 @@ module CNTK
 
   class Parameter # < Variable
     extend VariableExtend
-    def self.create(shape: nil, init: nil, dtype: DataType_Float, device: DeviceDescriptor::use_default_device(), name: "")
+    def self.create(shape: nil, init: 0, dtype: DataType_Float, device: DeviceDescriptor::use_default_device(), name: "")
       create_from(init, shape, dtype, device, name)
     end
   end

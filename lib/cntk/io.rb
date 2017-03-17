@@ -1,6 +1,6 @@
 module CNTK
 
-  def create_composite_minibatch_source(dict)    
+  def self.create_composite_minibatch_source(dict)
     if dict.respond_to?(:to_hash)
       h = {}
       dict.to_hash.each_pair{|k, v|
