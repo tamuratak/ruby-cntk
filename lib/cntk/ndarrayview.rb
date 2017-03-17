@@ -2,12 +2,7 @@ module CNTK
   class NDArrayView
 
     def self.create(a)
-      if a.respond_to?(:shape) and a.respond_to?(:row_major?)
-        if a.row_major?
-          # NDArrayView is column-major.
-          # So we must transpose a.
-          ta = a #a.transpose
-        end
+      if a.respond_to?(:shape)
         case a
         when NDArrayView
           return a
@@ -16,12 +11,12 @@ module CNTK
         when Numo::SFloat
           dtype = DataType_Float
         else
-          raise "not implemented"
+          raise ArgumentError, "Numo::NArray or NDArrayView expected"
         end
-        return self.new(dtype, a.shape.to_a, ta.flatten.to_a,
+        return self.new(dtype, a.shape, a.flatten.to_a,
                         CNTK::DeviceDescriptor.default_device(), false)
       else
-        raise "not implemented"
+        raise ArgumentError, "not responds to :shape"
       end
     end
 
@@ -35,10 +30,8 @@ module CNTK
         raise "unknown data type"
       end
       ret = klass[*to_vec()]
-      # NDArrayView is column-major and NArray is row-major.
-      # So we must reverse shape and transpose it.
       ret = ret.reshape(*shape().to_a)
-      return ret #.transpose
+      return ret
     end
 
   end
