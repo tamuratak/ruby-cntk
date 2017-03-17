@@ -89,7 +89,8 @@ namespace CNTK {
 %template(StdVectorPairVariableVariable)      std::vector< std::pair<CNTK::Variable, CNTK::Variable> >;
 %template(StdVectorDictionaryValue)           std::vector< CNTK::DictionaryValue >;
 %template(StdUMapVariableValue)               std::unordered_map< CNTK::Variable, CNTK::ValuePtr >;
-%template(StdUMapVariableVariable)            std::unordered_map< CNTK::Variable, CNTK::Variable >;
+%template()                                   std::unordered_map< CNTK::Variable, CNTK::Variable >;
+%template()                                   std::unordered_map< CNTK::Variable, CNTK::MinibatchData>;
 %template()                                   std::unordered_map< CNTK::Parameter, CNTK::NDArrayViewPtr>;
 %template(StdUSetVariable)                    std::unordered_set<CNTK::Variable>;
 %template(StdUSetDistributedWorkerDescriptor) std::unordered_set<CNTK::DistributedWorkerDescriptor>;
@@ -108,6 +109,10 @@ namespace CNTK {
 %rename("%s", %$isconstructor) "";
 %rename(__forward__)              CNTK::Function::Forward;
 %rename(__backward__)             CNTK::Function::Backward;
+%rename(__train_minibatch__)  CNTK::Trainer::TrainMinibatch;
+%rename(__train_minibatchdata__)  CNTK::Trainer::TrainMinibatch(const std::unordered_map<Variable, MinibatchData>&, const DeviceDescriptor& = DeviceDescriptor::UseDefaultDevice());
+%rename(__train_minibatchdata__) CNTK::Trainer::TrainMinibatch(const std::unordered_map<Variable, MinibatchData>&, std::unordered_map<Variable, ValuePtr>&, const DeviceDescriptor& = DeviceDescriptor::UseDefaultDevice());
+%rename(__test_minibatchdata__) CNTK::Trainer::TestMinibatch(const std::unordered_map<Variable, MinibatchData>&, const DeviceDescriptor& = DeviceDescriptor::UseDefaultDevice());
 %rename(__create__)               CNTK::Value::Create;
 %rename(__dynamic_axes__)         CNTK::Variable::DynamicAxes;
 // %rename(__times_transpose__)          CNTK::TransposeTimes;
