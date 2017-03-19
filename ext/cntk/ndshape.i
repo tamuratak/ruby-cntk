@@ -19,6 +19,7 @@
 
     NDShape AppendShape(const NDShape&);
 
+    static const size_t InferredDimension = (size_t)-1;
     static const NDShape Unknown;
 
     %extend {

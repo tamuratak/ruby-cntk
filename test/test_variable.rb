@@ -14,4 +14,14 @@ class TestCNTKReader < Test::Unit::TestCase
                  val.mask.to_narray)
   end
 
+  def test_times_3
+    x_ = constant( SFloat[1,2,3] ).reshape( [1,3] )
+    y_ = constant( SFloat[1,2,3] ).reshape( [3,1] )
+    b_ = constant( SFloat[1].reshape(1,1) )
+    ret = x_.dot(y_)
+    ret.outputs[0].shape
+    ret2 = ret.outputs[0] + b_
+    ret2.outputs[0].shape
+  end
+
 end

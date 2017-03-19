@@ -164,6 +164,7 @@ namespace CNTK {
 // In the future, we would just swtich to %include "CNTKLibrary.h". 
 //  
 namespace CNTK {
+
   enum class DataType {
     Unknown,
     Float,

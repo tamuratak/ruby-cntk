@@ -700,6 +700,9 @@ end
 
 class NDShape
 
+  Inferred_dimension
+  Unknown
+
   # @return [NDShape]
   def NDShape::unknown
   end
