@@ -28,10 +28,6 @@ module CNTK
       end
     end
 
-    def -@
-      Ops.negate(self)
-    end
-
     def *(other)
       Ops.element_times(self, other)
     end

@@ -25,7 +25,7 @@ module CNTK
     # @return [MinibatchData]
     def next_minibatch(minibatch_size_in_samples, device: DeviceDescriptor.use_default_device,
                        num_data_partitions: 1, partition_index: 0)
-      mb = get_next_minibatch(0, minibatch_size_in_samples, num_data_partitions, partition_index, device)
+      get_next_minibatch(0, minibatch_size_in_samples, num_data_partitions, partition_index, device)
     end
 
   end
