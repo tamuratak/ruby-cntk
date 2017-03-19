@@ -25,7 +25,7 @@ class TestCNTK < Test::Unit::TestCase
 
   def test_parameter
     parameter(init: 2)
-    parameter(init: CNTK.uniform_initializer(1) )
+    parameter(init: CNTK::Initializer.uniform(1) )
   end
 
   def test_scalar
