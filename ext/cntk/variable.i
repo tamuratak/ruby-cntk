@@ -52,6 +52,7 @@
                          const std::vector<Axis>& dynamicAxes = Axis::DefaultInputVariableDynamicAxes());
   Variable OutputVariable(const NDShape& shape, enum DataType dataType, const std::vector<Axis>& dynamicAxes, const std::wstring& name /*= L""*/);
 
+  static const unsigned long SentinelValueForAutoSelectRandomSeed = std::numeric_limits<unsigned long>::max() - 2;
   static const int SentinelValueForInferParamInitRank = std::numeric_limits<int>::max();
   static const int DefaultParamInitScale = 1;
   static const int DefaultParamInitOutputRank = 1;

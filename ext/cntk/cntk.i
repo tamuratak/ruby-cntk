@@ -101,8 +101,8 @@ namespace CNTK {
 ///
 ///************************************
 
-%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="Initializer|GainValue$") "";
-%rename("%(utitle)s", %$isfunction, regexmatch$name="Initializer|GainValue$") "";
+%rename("__%(utitle)s__", %$isfunction, notregexmatch$name="GainValue$") "";
+%rename("%(utitle)s", %$isfunction, regexmatch$name="GainValue$") "";
 %rename("%(utitle)s", %$ismember, %$isfunction) "";
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
 %rename("%s", %$isenum) "";
