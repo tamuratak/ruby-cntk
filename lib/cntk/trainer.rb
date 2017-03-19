@@ -21,16 +21,16 @@ class Trainer
 
 class << self
 
-  def create(model: nil, loss: nil, evalation: nil, learners: nil)
+  def create(model: nil, loss: nil, evaluation: nil, learners: nil)
     unless model and loss and learners
       raise ArgumentError, "model, loss function, and learners needed"
     end
     model     = variable_to_function(model)
     loss      = variable_to_function(loss)
-    evalation = variable_to_function(evalation) if evalation
+    evaluation = variable_to_function(evaluation) if evaluation
     learners  = [learners] unless learners.is_a?(Array)
-    if evalation
-      CNTK.__create_trainer__(model, loss, evalation, learners)
+    if evaluation
+      CNTK.__create_trainer__(model, loss, evaluation, learners)
     else
       CNTK.__create_trainer__(model, loss, learners)
     end
