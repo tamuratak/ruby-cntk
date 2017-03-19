@@ -2,41 +2,28 @@ module CNTK
 
   class Function
 
-    def check_ouputs_size_is_one
-      if outputs.size > 1
-        raise "the size of self.outputs is larger than 1"
-      end
-    end
-    private :check_ouputs_size_is_one
-
     def dot(other)
-      check_ouputs_size_is_one()
-      outputs[0].dot(other)
+      output.dot(other)
     end
 
     def -@
-      check_ouputs_size_is_one()
-      - outputs[0]
+      - output
     end
 
     def +(other)
-      check_ouputs_size_is_one()
-      outputs[0] + other
+      output + other
     end
 
     def -(other)
-      check_ouputs_size_is_one()
-      outputs[0] - other
+      output - other
     end
 
     def *(other)
-      check_ouputs_size_is_one()
-      outputs[0] * other
+      output * other
     end
 
     def /(other)
-      check_ouputs_size_is_one()
-      outputs[0] / other
+      output / other
     end
 
     # FIXME
@@ -49,10 +36,15 @@ module CNTK
     end
 
     def call(func)
-      if func.outputs.length == 1
-        return replace_placeholders({placeholders[0] => func.output})
+      if func.respond_to?(:output)
+        val = func.output
       else
-        raise "the outputs of given Funtion object must has 1 length."
+        val = func
+      end
+      if placeholders().length == 1
+        replace_placeholders({placeholders[0] => val})
+      else
+        raise "the number of placeholders is not 1."
       end
     end
 
