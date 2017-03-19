@@ -52,11 +52,7 @@ module Ops
       when Variable
         x
       when Function
-        if x.outputs.size == 1
-          x.output
-        else
-          raise ArgumentError, "the output size of Function expected to be 1"
-        end
+        x.output
       when Value, Numo::NArray, Numeric
         Ops.constant(x)
       when Array
@@ -210,10 +206,10 @@ module Ops
                                  epsilon, use_cudnn_engine, name)
   end
 
-  def times(left, right, output_rank = 1, name="")
+  def times(left, right, output_rank: 1, infer_input_rank_to_map: -1, name: "")
     left, right = Ops.convert_to_variable( left, right )
     # change the order because CNTK a column-major.
-    CNTK.__times__(right, left, output_rank, name)
+    CNTK.__times__(right, left, output_rank, infer_input_rank_to_map, name)
   end
 
   def times_transpose(left, right, output_rank = 1, name="")
@@ -350,28 +346,207 @@ module Ops
     CNTK.__edit_distance_error__(input_a, input_b, subPen, delPen, insPen, squashInputs, samplesToIgnore, name)
   end
 
-  (["__negate__", "__sigmoid__", "__tanh__", "__sin__", "__cos__", "__re_lu__",
-   "__exp__", "__log__", "__square__", "__sqrt__", "__round__", "__floor__",
-   "__ceil__", "__reciprocal__", "__softmax__", "__hardmax__"] ).each{|orig_name|
-    mth_name = orig_name.gsub(/_/, "")
-    define_method(mth_name) do |*args|
-      x    = Ops.convert_to_variable( args[0] )
-      name = args[1] || ""
-      CNTK.send(orig_name, x, name)
-    end
-  }
+  def negate(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__negate__(x, name)
+  end
 
-  (["__plus__", "__minus__", "__log_add_exp__", "abs", "__element_times__",
-   "__element_divide__", "__equal__", "__not_equal__", "__less__", "__less_equal__",
-   "__greater__", "__greater_equal__"] +
-   ["__cosine_distance__", "__binary_cross_entropy__", "__squared_error__"]).each{|orig_name|
-    mth_name = orig_name.gsub(/__/, "")
-    define_method(mth_name) do |*args|
-      x, y  = Ops.convert_to_variable( args[0], args[1] )
-      name = args[2] || ""
-      CNTK.send(orig_name, x, y, name)
-    end
-  }
+  def sigmoid(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__sigmoid__(x, name)
+  end
+
+  def tanh(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__tanh__(x, name)
+  end
+
+  def sin(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__sin__(x, name)
+  end
+
+  def cos(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__cos__(x, name)
+  end
+
+  def relu(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__re_lu__(x, name)
+  end
+
+  def exp(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__exp__(x, name)
+  end
+
+  def log(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__log__(x, name)
+  end
+
+  def square(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__square__(x, name)
+  end
+
+  def sqrt(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__sqrt__(x, name)
+  end
+
+  def round(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__round__(x, name)
+  end
+
+  def floor(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__floor__(x, name)
+  end
+
+  def ceil(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__ceil__(x, name)
+  end
+
+  def reciprocal(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__reciprocal__(x, name)
+  end
+
+  def softmax(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__softmax__(x, name)
+  end
+
+  def hardmax(x=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    x = Ops.convert_to_variable( x )
+    CNTK.__hardmax__(x, name)
+  end
+
+  def plus(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__plus__(x, y, name)
+  end
+
+  def minus(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__minus__(x, y, name)
+  end
+
+  def log_add_exp(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__log_add_exp__(x, y, name)
+  end
+
+  def abs(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.abs(x, y, name)
+  end
+
+  def element_times(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__element_times__(x, y, name)
+  end
+
+  def element_divide(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__element_divide__(x, y, name)
+  end
+
+  def equal(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__equal__(x, y, name)
+  end
+
+  def not_equal(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__not_equal__(x, y, name)
+  end
+
+  def less(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__less__(x, y, name)
+  end
+
+  def less_equal(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__less_equal__(x, y, name)
+  end
+
+  def greater(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__greater__(x, y, name)
+  end
+
+  def greater_equal(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__greater_equal__(x, y, name)
+  end
+
+  def cosine_distance(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__cosine_distance__(x, y, name)
+  end
+
+  def binary_cross_entropy(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__binary_cross_entropy__(x, y, name)
+  end
+
+  def squared_error(x=nil, y=nil, name: "")
+    x = x || Ops.placeholder_variable(name: "x")
+    y = y || Ops.placeholder_variable(name: "y")
+    x, y = Ops.convert_to_variable( x, y )
+    CNTK.__squared_error__(x, y, name)
+  end
+
 
 end # module Ops
 end # module CNTK
