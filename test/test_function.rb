@@ -7,7 +7,7 @@ class TestCNTK < Test::Unit::TestCase
   include CNTK::Ops
 
   def test_function_call
-    v0 = NDArrayView.new(DataType_Double, [1], [1.9], DeviceDescriptor.default_device(), true)
+    v0 = NDArrayView.new(DataType_Double, [1], [1.9], DeviceDescriptor.use_default_device(), true)
     v = input_variable([1], dtype: DataType_Double)
     f1 = sin(v)
     x = placeholder_variable()

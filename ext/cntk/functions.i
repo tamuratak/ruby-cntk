@@ -154,7 +154,6 @@
                           const std::vector<bool>& autoPadding = {true},
                           const NDShape& lowerPad = {0},
                           const NDShape& upperPad = {0},
-                          bool transpose = false,
                           size_t maxTempMemSizeInSamples = 0,
                           const std::wstring& name = L"");
 
@@ -169,6 +168,7 @@
                       const std::vector<bool>& autoPadding = {false},
                       const NDShape& lowerPad = {0},
                       const NDShape& upperPad = {0},
+                      const bool ceilOutDim = false,
                       const std::wstring& name = L"");
 
   FunctionPtr Unpooling(const Variable& operand,

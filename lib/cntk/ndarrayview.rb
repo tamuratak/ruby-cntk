@@ -14,7 +14,7 @@ module CNTK
           raise ArgumentError, "Numo::NArray or NDArrayView expected"
         end
         return self.new(dtype, a.shape, a.flatten.to_a,
-                        CNTK::DeviceDescriptor.default_device(), false)
+                        CNTK::DeviceDescriptor.use_default_device(), false)
       else
         raise ArgumentError, "not responds to :shape"
       end
