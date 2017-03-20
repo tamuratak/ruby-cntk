@@ -18,6 +18,10 @@ class Trainer
     end
   end
 
+  # @return [Float]
+  def test_minibatch(args, device: DeviceDescriptor.use_default_device)
+    __test_minibatchdata__(args, device)
+  end
 
 class << self
 
