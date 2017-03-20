@@ -5,7 +5,7 @@ module Layers
 
   # @return [Function]
   def dense(output_shape, init: Initializer.glorot_uniform,
-            input_shape: [CNTK::NDShape::Inferred_dimension],
+            input_shape: [CNTK::NDShape::InferredDimension],
             use_bias: true, init_bias: 0, name: "")
     _W = Ops.parameter(shape: input_shape + output_shape, init: init,      name: "W")
      b = Ops.parameter(shape:               output_shape, init: init_bias, name: "b")

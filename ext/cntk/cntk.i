@@ -105,6 +105,7 @@ namespace CNTK {
 %rename("%(utitle)s", %$isfunction, regexmatch$name="GainValue$") "";
 %rename("%(utitle)s", %$ismember, %$isfunction) "";
 %rename("%(utitle)s", %$ismember, %$isvariable) "";
+%rename("%s", %$ismember, %$isvariable, %$isstatic, %$hasvalue) "";
 %rename("%s", %$isenum) "";
 %rename("%s", %$isconstructor) "";
 %rename(__forward__)              CNTK::Function::Forward;
