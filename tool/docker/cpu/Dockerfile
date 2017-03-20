@@ -7,9 +7,6 @@ RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install -y \
     build-essential \
-    clang-3.8 \
-    clang-3.8-doc \
-    llvm-3.8-doc \
     cmake \
     git \
     pkg-config \
@@ -19,4 +16,4 @@ RUN apt-get update \
     wget \
  && gem2.3 install rake-compiler minitest test-unit numo-narray
 
-RUN gem2.3 install --pre ruby-cntk -- --with-cntklibrary-2.0-lib=/cntk/cntk/lib/ --with-cntklibrary-2.0-include=/cntk/Include/
+RUN gem2.3 install --pre ruby-cntk -v 0.1.0 -- --with-cntklibrary-2.0-lib=/cntk/cntk/lib/ --with-cntklibrary-2.0-include=/cntk/Include/

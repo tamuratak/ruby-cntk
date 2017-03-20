@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby-cntk'
-  s.version     = '0.1.0.pre2'
+  s.version     = '0.1.0.pre3'
   s.date        = '2017-03-20'
   s.summary     = "Ruby binding for Microsoft CNTK, an open source deep-learning toolkit"
   s.description = "Ruby binding for Microsoft Cognitive Toolkit (CNTK), an open source deep-learning toolkit"
@@ -14,6 +14,6 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'rake-compiler', '~> 0.9.5'
   s.rdoc_options << "--exclude=."
-  s.requirements << 'CNTK >= 2.0b11'
+  s.requirements << 'CNTK == 2.0b11'
   s.required_ruby_version = '>= 2.3.0'
 end
