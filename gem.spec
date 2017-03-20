@@ -1,16 +1,14 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby-cntk'
-  s.version     = '0.1.0.pre1'
-  s.date        = '2017-02-16'
+  s.version     = '0.1.0.pre2'
+  s.date        = '2017-03-20'
   s.summary     = "Ruby bindings for Microsoft CNTK, an open source deep-learning toolkit"
   s.description = "Ruby bindings for Microsoft Cognitive Toolkit (CNTK), an open source deep-learning toolkit"
   s.authors     = ["Takashi Tamura"]
   s.email       = ''
-  s.files       = ["LICENSE", 
-#                   "README.md",
-                   "lib/cntk.rb",                   
+  s.files       = ["lib/cntk.rb",
                    "ext/cntk/cntk_wrap.cxx",
-                   "ext/cntk/extconf.rb"] + Dir.glob("lib/cntk/**/*.rb")
+                   "ext/cntk/extconf.rb"] + Dir.glob("lib/cntk/**/*.rb") + Dir.glob("licenses/*")
   s.extensions  = ["ext/cntk/extconf.rb"]
   s.homepage    = 'https://github.com/tamuratak/ruby-cntk'
   s.license     = 'MIT'
