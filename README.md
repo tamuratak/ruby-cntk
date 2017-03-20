@@ -4,4 +4,6 @@ Ruby binding for The Microsoft Cognitive Toolkit (CNTK), an open source deep-lea
 
 ## Installation
 
-Docker image on docker hub is recommended.
+Using docker image on docker hub is recommended.
+
+* https://hub.docker.com/r/tamuratak/ruby-cntk/
