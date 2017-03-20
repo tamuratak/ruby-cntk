@@ -110,7 +110,6 @@ class TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<d
                          const CNTK::MomentumSchedule& momentumSchedule,
                          bool unitGain = DefaultUnitGainValue(),
                          const CNTK::MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
-                         bool lowMemory = true,
                          AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
 
   LearnerPtr RMSPropLearner(const std::vector<Parameter>& parameters,

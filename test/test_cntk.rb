@@ -37,14 +37,14 @@ class TestCNTK < Test::Unit::TestCase
 
 
   def test_narray
-    v = NDArrayView.new(DataType_Float, [2,3], [1,2,3,4,5,6], DeviceDescriptor.default_device(), true)
+    v = NDArrayView.new(DataType_Float, [2,3], [1,2,3,4,5,6], DeviceDescriptor.use_default_device(), true)
     assert_equal([2,3],
                  v.to_narray.shape.to_a)
     assert_equal([[1, 2, 3],
                   [4, 5, 6]],
                  v.to_narray.to_a)
 
-    v = NDArrayView.new(DataType_Float, [3,2,2], (1..12).to_a, DeviceDescriptor.default_device(), true)
+    v = NDArrayView.new(DataType_Float, [3,2,2], (1..12).to_a, DeviceDescriptor.use_default_device(), true)
     assert_equal([3,2,2],
                  v.shape.to_a)
     assert_equal([3,2,2],

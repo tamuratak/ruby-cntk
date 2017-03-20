@@ -34,7 +34,6 @@
     virtual void OnCheckpointEnd(size_t /*checkpointIndex*/);
     virtual void OnCrossValidationStart(size_t /*validationIndex*/) {};
     virtual void OnCrossValidationEnd(size_t /*validationIndex*/, double /*averageError*/, size_t /*numberOfSamples*/, size_t /*numberOfMinibatches*/);
-    virtual void OnProgress(size_t /*index*/);
   };
 
   TrainingSessionPtr 

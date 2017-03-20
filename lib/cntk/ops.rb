@@ -155,11 +155,11 @@ module Ops
 
   def convolution(kernel: nil, input: nil, strides: [1], sharing: [true],
                   padding: [false], lower_pad: [0], upper_pad: [0],
-                  transpose: false, max_temp_mem_size_in_samples: 0, name: "")
+                  max_temp_mem_size_in_samples: 0, name: "")
     kernel = Ops.convert_to_variable( kernel )
     input  = Ops.convert_to_variable( input  )
     CNTK.__convolution__(kernel, input, strides, sharing, padding, lower_pad, upper_pad,
-                         transpose, max_temp_mem_size_in_samples, name)
+                         max_temp_mem_size_in_samples, name)
   end
 
 
@@ -176,7 +176,7 @@ module Ops
   end
 
   def pooling(x, type, shape, strides: [1], padding: [false],
-              lower_pad: [0], upper_pad: [0], name: "")
+              lower_pad: [0], upper_pad: [0], ceil_out_dim: false, name: "")
     x = Ops.convert_to_variable( x )
     case type
     when :max
@@ -186,7 +186,7 @@ module Ops
     else
       raise ArgumentError, "unknown pooling type"
     end
-    CNTK.__pooling__(x, type, shape, strides, padding, lower_pad, upper_pad, name)
+    CNTK.__pooling__(x, type, shape, strides, padding, lower_pad, upper_pad, ceil_out_dim, name)
   end
 
   def unpooling(operand, input, type, shape, strides: [1], padding: [false],

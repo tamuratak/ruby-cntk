@@ -48,11 +48,6 @@
 %}
 %inline %{
 namespace CNTK {};
-namespace CNTK {
-  static CNTK::DeviceDescriptor __cpu_device__ = CNTK::DeviceDescriptor::CPUDevice();
-  static CNTK::DeviceDescriptor __best_device__ = CNTK::DeviceDescriptor::BestDevice();
-  static std::vector<CNTK::DeviceDescriptor> __all_device__;
-};
 %}
 
 namespace CNTK {
@@ -218,19 +213,9 @@ namespace CNTK {
         return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::GPUDevice(deviceId));
       }
 
-      %newobject DefaultDevice;
-      static CNTK::DeviceDescriptor* DefaultDevice(){
-        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::DefaultDevice());
-      }
-
       %newobject UseDefaultDevice;
       static CNTK::DeviceDescriptor* UseDefaultDevice(){
         return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::UseDefaultDevice());
-      }
-
-      %newobject BestDevice;
-      static CNTK::DeviceDescriptor* BestDevice(){
-        return new CNTK::DeviceDescriptor(CNTK::DeviceDescriptor::BestDevice());
       }
 
       bool __eq__(const DeviceDescriptor& other){
@@ -239,7 +224,6 @@ namespace CNTK {
 
     }
 
-    static void SetDefaultDevice(const DeviceDescriptor& newDefaultDevice);
     static const std::vector<DeviceDescriptor>& AllDevices();
 
   };
