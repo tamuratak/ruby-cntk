@@ -29,6 +29,7 @@
     FunctionPtr Owner();
     enum DataType GetDataType();
     bool NeedsGradient();
+    std::wstring AsString();
 
     %extend{
       CNTK::FunctionPtr to_function() {

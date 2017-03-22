@@ -98,8 +98,10 @@
     static const std::vector<Axis>& DefaultInputVariableDynamicAxes();
     static const std::vector<Axis>& UnknownDynamicAxes();
     static const Axis& DefaultDynamicAxis();
+    static const Axis& OperandSequenceAxis();
     static const Axis& DefaultBatchAxis();
     static const Axis& AllStaticAxes();
+    static const Axis& AllAxes();
     static Axis EndStaticAxis();
     
     %extend{

@@ -98,6 +98,7 @@
     Dictionary(const Dictionary&);
     bool Contains(const std::wstring& key);
     void Add(const Dictionary& other);
+    void Add(const std::wstring& key, const DictionaryValue& value);
     size_t Size();
     void Save(const std::wstring& filename);
     static Dictionary Load(const std::wstring& filename);

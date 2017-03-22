@@ -105,6 +105,13 @@ class TrainingParameterPerUnitSchedule<double, CNTK::TrainingParameterSchedule<d
 
   static CNTK::MomentumSchedule DefaultVarianceMomentum = MomentumAsTimeConstantSchedule(2 * 3600 * 100);
 
+  LearnerPtr FSAdaGradLearner(const std::vector<Parameter>& parameters,
+                              const LearningRateSchedule& learningRateSchedule,
+                              const CNTK::MomentumSchedule& momentumSchedule,
+                              bool unitGain = DefaultUnitGainValue(),
+                              const CNTK::MomentumSchedule& varianceMomentumSchedule = DefaultVarianceMomentum,
+                              AdditionalLearningOptions additionalOptions = AdditionalLearningOptions());
+
   LearnerPtr AdamLearner(const std::vector<Parameter>& parameters,
                          const CNTK::LearningRateSchedule& learningRateSchedule,
                          const CNTK::MomentumSchedule& momentumSchedule,

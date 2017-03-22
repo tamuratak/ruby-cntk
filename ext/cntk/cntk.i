@@ -200,6 +200,7 @@ namespace CNTK {
   public:
     unsigned int Id();
     CNTK::DeviceKind Type();
+    std::wstring AsString();
 
     %extend{
 

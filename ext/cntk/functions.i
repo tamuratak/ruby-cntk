@@ -33,6 +33,9 @@
                   std::unordered_map<Variable, ValuePtr>& backPropagatedGradientValuesForInputs);
     const std::wstring& OpName();
 
+    void Gradients(const std::unordered_map<Variable, ValuePtr>& arguments,
+                   std::unordered_map<Variable, ValuePtr>& gradients,
+                   const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     void Evaluate(const std::unordered_map<Variable, ValuePtr>& arguments,
                   std::unordered_map<Variable, ValuePtr>& outputs,
                   const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
@@ -66,12 +69,12 @@
     void RestoreModel(const std::wstring& modelFilePath);
     static FunctionPtr LoadModel(const std::wstring& modelFile, const DeviceDescriptor& computeDevice = DeviceDescriptor::UseDefaultDevice());
     void PrintGraph();
-
+    std::wstring AsString(bool doNotInferOutputs = true);
+    static const int MaxNumOutputs = 64;
 
     Dictionary Serialize();
     static FunctionPtr Deserialize(const Dictionary& dictionary, const ::CNTK::DeviceDescriptor& device = DeviceDescriptor::UseDefaultDevice());
 
-    static const int MaxNumOutputs = 64;
   };
 
 
@@ -118,12 +121,15 @@
   FunctionPtr TransposeTimes(const Variable& leftOperand, const Variable& rightOperand, const std::wstring& name = L"");
   
   FunctionPtr CosineDistance(const Variable& leftOperand, const Variable& rightOperand, const std::wstring& name = L"");
+  FunctionPtr CosineDistanceWithNegativeSamples(const Variable& leftOperand, const Variable& rightOperand, size_t shiftWindow, size_t numberOfNegativeSamples, const std::wstring& name = L"");
   FunctionPtr BinaryCrossEntropy(const Variable& prediction, const Variable& targets, const std::wstring& name = L"");
   FunctionPtr WeightedBinaryCrossEntropy(const Variable& prediction, const Variable& targets, const Variable& weights, const std::wstring& name = L"");
   FunctionPtr SquaredError(const Variable& prediction, const Variable& targets, const std::wstring& name = L"");
   FunctionPtr CrossEntropyWithSoftmax(const Variable& prediction, const Variable& labels, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr CrossEntropyWithSoftmax(const Variable& prediction, const Variable& labels, const std::wstring& name = L"");
   FunctionPtr EditDistanceError(const Variable& prediction, const Variable& labels, float substitutionPenalty, float deletionPenalty, float insertionPenalty, bool squashInputs, const std::vector<size_t>& samplesToIgnore, const std::wstring& name = L"");
+  FunctionPtr ForwardBackward(const Variable& graph, const Variable& features, size_t blankTokenId, int delayConstraint, const std::wstring& name = L"");
+  FunctionPtr LabelsToGraph(const Variable& labels, const std::wstring& name = L"");
   FunctionPtr ClassificationError(const Variable& prediction, const Variable& labels, size_t topN, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr ClassificationError(const Variable& prediction, const Variable& labels, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr ClassificationError(const Variable& prediction, const Variable& labels, const std::wstring& name = L"");
@@ -145,6 +151,7 @@
   FunctionPtr ReduceMean(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr ReduceMax(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr ReduceMin(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
+  FunctionPtr ReduceProd(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
   FunctionPtr PerDimMeanVarianceNormalize(const Variable& operand, const NDArrayViewPtr& mean, const NDArrayViewPtr& invStdDev, const std::wstring& name = L"");
   
   FunctionPtr Convolution(const Variable& convolutionMap,
@@ -201,7 +208,15 @@
   FunctionPtr Combine(const std::vector<Variable>& operands, const std::wstring& name = L"");
   FunctionPtr Alias(const Variable& operand, const std::wstring& name = L"");
   FunctionPtr AsBlock(FunctionPtr&& composite, const std::vector<std::pair<Variable, Variable>>& argumentsMap, const std::wstring& blockOpName, const std::wstring& blockName = L"");
-  
+  FunctionPtr StopGradient(const Variable& operand, const std::wstring& name = L"");
+  FunctionPtr AsComposite(const FunctionPtr& rootFunction, const std::wstring& name = L"");
+  FunctionPtr ELU(const Variable& operand, const std::wstring& name = L"");
+  FunctionPtr LeakyReLU(const Variable& operand, const std::wstring& name = L"");
+  FunctionPtr PReLU(const Variable& alpha, const Variable& operand, const std::wstring& name = L"");
+  FunctionPtr Softplus(const Variable& operand, const std::wstring& name = L"");
+  FunctionPtr Argmax(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
+  FunctionPtr Argmin(const Variable& operand, const Axis& axis, const std::wstring& name = L"");
+
     namespace Sequence
     {
       FunctionPtr IsFirst(const Variable& operand, const std::wstring& name = L"");
