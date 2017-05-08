@@ -65,5 +65,31 @@
     const StreamInformation& StreamInfo(const Variable& variableToMatch);
   };
 
-  MinibatchSourcePtr CreateCompositeMinibatchSource(const Dictionary& configuration);
+
+  enum class TraceLevel : unsigned int
+  {
+    Error = 0,
+      Warning = 1,
+      Info = 2
+   };
+
+  void SetTraceLevel(TraceLevel value);
+  TraceLevel GetTraceLevel();
+
+  typedef Dictionary Deserializer;
+
+  struct MinibatchSourceConfig
+  {
+    MinibatchSourceConfig(const std::vector<Deserializer>& deserializers, bool randomize = true);
+    size_t maxSamples { MinibatchSource::InfinitelyRepeat };
+    size_t maxSweeps { MinibatchSource::InfinitelyRepeat };
+    size_t randomizationWindowInChunks { MinibatchSource::DefaultRandomizationWindowInChunks };
+    size_t randomizationWindowInSamples { 0 };
+    TraceLevel traceLevel{ GetTraceLevel() };
+    size_t truncationLength { 0 };
+    bool isFrameModeEnabled { false };
+    bool isMultithreaded { false };
+    std::vector<Deserializer> deserializers;
+  };
+  MinibatchSourcePtr CreateCompositeMinibatchSource(const MinibatchSourceConfig& configuration);
 

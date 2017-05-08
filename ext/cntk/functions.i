@@ -97,10 +97,10 @@
   FunctionPtr Hardmax(const Variable& operand, const std::wstring& name = L"");
   FunctionPtr TransposeAxes(const Variable& operand, const Axis& axis1, const Axis& axis2, const std::wstring& name = L"");
   FunctionPtr Transpose(const Variable& operand, const std::wstring& name = L"");
-  FunctionPtr Slice(const Variable& operand, const Axis& axis, int beginIndex, int endIndex, const std::wstring& name = L"");
-  FunctionPtr RandomSample(const Variable& operand, size_t numSamples, bool allowDuplicates, const std::wstring& name /*= L""*/);
-  FunctionPtr RandomSampleInclusionFrequency(const Variable& operand, size_t numSamples, bool allowDuplicates, const std::wstring& name /*= L""*/);
-  FunctionPtr Dropout(const Variable& operand, double dropoutRate, const std::wstring& name = L"");
+  FunctionPtr Slice(const Variable& operand, const std::vector<Axis>& axis, const std::vector<int>& beginIndex, const std::vector<int>& endIndex, const std::wstring& name = L"");
+  FunctionPtr RandomSample(const Variable& operand, size_t numSamples, bool allowDuplicates, unsigned long seed = SentinelValueForAutoSelectRandomSeed, const std::wstring& name = L"");
+  FunctionPtr RandomSampleInclusionFrequency(const Variable& operand, size_t numSamples, bool allowDuplicates, unsigned long seed = SentinelValueForAutoSelectRandomSeed, const std::wstring& name = L"");
+  FunctionPtr Dropout(const Variable& operand, double dropoutRate, unsigned long seed = SentinelValueForAutoSelectRandomSeed, const std::wstring& name = L"");
   FunctionPtr Reshape(const Variable& operand, const NDShape& replacementShape, const Axis& beginAxis, const Axis& endAxis, const std::wstring& name = L"");
   FunctionPtr Reshape(const Variable& operand, const NDShape& newShape, const std::wstring& name = L"");
   FunctionPtr Plus(const Variable& leftOperand, const Variable& rightOperand, const std::wstring& name = L"");
@@ -159,8 +159,6 @@
                           const NDShape& strides = {1},
                           const std::vector<bool>& sharing = {true},
                           const std::vector<bool>& autoPadding = {true},
-                          const NDShape& lowerPad = {0},
-                          const NDShape& upperPad = {0},
                           size_t maxTempMemSizeInSamples = 0,
                           const std::wstring& name = L"");
 
@@ -173,9 +171,8 @@
                       const NDShape& poolingWindowShape,
                       const NDShape& strides = {1},
                       const std::vector<bool>& autoPadding = {false},
-                      const NDShape& lowerPad = {0},
-                      const NDShape& upperPad = {0},
                       const bool ceilOutDim = false,
+                      const bool includePad = false,
                       const std::wstring& name = L"");
 
   FunctionPtr Unpooling(const Variable& operand,
@@ -184,8 +181,6 @@
                         const NDShape& UnpoolingWindowShape,
                         const NDShape& strides = { 1 },
                         const std::vector<bool>& autoPadding = { false },
-                        const NDShape& lowerPad = { 0 },
-                        const NDShape& upperPad = { 0 },
                         const std::wstring& name = L"");
 
   FunctionPtr BatchNormalization(const Variable& operand,

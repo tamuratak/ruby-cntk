@@ -9,19 +9,15 @@
     };
   public:
     TrainingSession(
-                    const MinibatchSourcePtr& trainingSource,
-                    const TrainerPtr& trainer,
-                    const std::unordered_map<Variable, StreamInformation>& modelInputToMinibatchSourceStream,
-                    const CNTK::MinibatchSizeSchedule& minibatchSizeSchedule,
-                    size_t checkpointFrequencyInSamples,
-                    const std::wstring& checkPointFileName,
-                    const MinibatchSourcePtr& crossValidationSource = nullptr,
-                    const CNTK::MinibatchSizeSchedule& crossValidationSchedule = CNTK::MinibatchSizeSchedule(1),
-                    size_t crossValidationFrequencyInSamples = std::numeric_limits<size_t>::max(),
-                    bool restoreFromCheckpointIfExists = true,
-                    bool keepExistingCheckpoints = false,
-                    size_t maxNumberOfTrainingSamples = std::numeric_limits<size_t>::max(),
-                    size_t progressFrequency = std::numeric_limits<size_t>::max());
+            const TrainerPtr& trainer,
+            const MinibatchSourcePtr& trainingSource,
+            const MinibatchSizeSchedule& minibatchSizeSchedule,
+            const std::unordered_map<Variable, StreamInformation>& inputVarToStream,
+            size_t maxNumTrainingSamples,
+            size_t progressFrequency,
+            const CheckpointConfig& checkpointing,
+            const CrossValidationConfig& crossValidation,
+            const TestConfig& test);
 
     void Train(const DeviceDescriptor& computeDevice);
 

@@ -7,6 +7,12 @@
  // https://github.com/Microsoft/CNTK/blob/master/Source/CNTKv2LibraryDll/API/CNTKLibrary.h
  //
 
+%{
+#include <vector>
+#include <memory>
+#include <CNTKLibrary.h>
+%}
+
 %include std_wstring.i
 %include std_vector.i
 %include std_map.i
@@ -42,10 +48,7 @@
 %shared_ptr(CNTK::DistributedLearner)
 
 
-%{
-#include <vector>
-#include <CNTKLibrary.h>
-%}
+
 %inline %{
 namespace CNTK {};
 %}
